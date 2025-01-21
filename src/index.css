@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: theme('colors.bg');
+    color: white;
+    font-family: "Inter", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    cursor: none;
+}
+
+.cursor-dot{
+    width: 5px;
+    height: 5px;
+    background-color: white;
+}
+
+.cursor-outline{
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+}
+
+.cursor-dot,
+.cursor-outline{
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    z-index: 99;
+    pointer-events: none;
+}
+
+button{
+    cursor: none;
+}
+
+
+.loader {
+    width: 40px;
+    aspect-ratio: 1;
+    position: relative;
+}
+
+.loader:before,
+.loader:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: -8px 0 0 -8px;
+    width: 16px;
+    aspect-ratio: 1;
+    background: white;
+    animation:
+      l1-1 2s  infinite,
+      l1-2 .5s infinite;
+}
+
+.loader:after {
+    background: theme('colors.primary');
+    animation-delay: -1s,0s;
+}
+
+@keyframes l1-1 {
+    0%   {top:0   ;left:0}
+    25%  {top:100%;left:0}
+    50%  {top:100%;left:100%}
+    75%  {top:0   ;left:100%}
+    100% {top:0   ;left:0}
+}
+
+@keyframes l1-2 {
+    80%,100% {transform: rotate(0.5turn)}
+}
