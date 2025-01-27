@@ -10,9 +10,18 @@ import Sun from "./components/Sun"
 import { OrbitControls } from "@react-three/drei"
 import { PerspectiveCamera } from "three"
 import Scene from "./components/Scene"
+import { motion, useInView } from "motion/react"
 
 function App() {
     const [loader, setLoader] = useState({ isLoading: true, percentage: 0 });
+
+    const ref = useRef(null);
+    const isInView = useInView(ref, { amount: "some", once: false });
+
+    useEffect(() => {
+        console.log("element is in view" + isInView);
+
+    }, [isInView]);
 
     useEffect(() => {
         let id;
@@ -64,11 +73,12 @@ function App() {
                     <Navbar />
                     <HeroSection />
                 </div>
-                <div className="w-full h-screen">
-                <Canvas resize={{ scroll:false }}>
-                    <Scene/>
-                </Canvas>
-                </div>
+                <motion.div
+                    className="w-full h-screen">
+                    <Canvas id="foo" resize={{ scroll: false }}>
+                        <Scene />
+                    </Canvas>
+                </motion.div>
             </InitialLoader>
         </>
     )

@@ -33,14 +33,12 @@ function HeroSection() {
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
                 transition={{ duration: 0.65, delay:0.3 }}
                 className="z-[2]">
-                <button
-                    className="animate-move-y text-primary bg-gray-300 p-4 rounded-full mt-6 
+                <a  href="#foo"
+                    className="block animate-move-y text-primary bg-gray-300 p-4 rounded-full mt-6 
                 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10 border-[1px] border-neutral-600">
                     <ChevronDown size={30} className="hover:scale-75 transition-all" />
-                </button>
-
+                </a>
             </motion.div>
-
         </div>
     )
 }
