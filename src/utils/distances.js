@@ -1,11 +1,11 @@
-const neptuneDistance = 3000;
-const uranusDistance = 2500;
-const saturnDistance = 2100;
-const jupiterDistance = 1700;
-const marsDistance = 1400;
-const earthDistance = 1000 / 2;
-const venusDistance = 700 / 2;
-const mercuryDistance = 300 / 2;
+const neptuneDistance = 15000;
+const uranusDistance = 6000;
+const saturnDistance = 5000;
+const jupiterDistance = 4000;
+const marsDistance = 3000;
+const earthDistance = 2000;
+const venusDistance = 1000;
+const mercuryDistance = 500;
 
 export {
     neptuneDistance,

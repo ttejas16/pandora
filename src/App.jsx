@@ -74,6 +74,10 @@ function App() {
                     <HeroSection />
                 </div>
                 <motion.div
+                    initial={{ opacity:0 }}
+                    whileInView={{ opacity:1 }}
+                    transition={{ duration:2 }}
+                    viewport={{ once:true, amount:"all" }}
                     className="w-full h-screen">
                     <Canvas id="foo" resize={{ scroll: false }}>
                         <Scene />

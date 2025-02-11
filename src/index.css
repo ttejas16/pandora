@@ -21,6 +21,10 @@ body {
     /* overflow: hidden; */
 }
 
+.no-select{
+    user-select: none;
+}
+
 .cursor-dot{
     width: 5px;
     height: 5px;

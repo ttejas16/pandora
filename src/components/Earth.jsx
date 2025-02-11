@@ -1,8 +1,11 @@
-import { Html, useTexture } from "@react-three/drei";
+import { Html, Line, useTexture } from "@react-three/drei";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef, useState, lazy } from "react";
 import { AdditiveBlending, DoubleSide, MathUtils, SRGBColorSpace, TextureLoader, Vector3 } from "three";
 import { earthDistance } from "../utils/distances";
+import PlanetName from "./PlanetName";
+import { Line2 } from "three/examples/jsm/lines/webgpu/Line2.js";
+import { LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
 
 const positionFromSunX = 143;
 
@@ -22,31 +25,22 @@ function Earth() {
     // }, []);
 
 
-    const meshRef = useRef();
+    const ref = useRef();
     const cloudsRef = useRef();
 
 
-    // useFrame(() => {
-    //     if (!meshRef.current) {
-    //         return;
-    //     }
+    function intoView(e) {
 
-    //     meshRef.current.rotation.y += 0.002;
-    //     cloudsRef.current.rotation.y += 0.002;
-    // });
+        if (!ref.current) {
+            return;
+        }
+
+        controls.target = new Vector3(...Object(ref.current.position));
+    }
 
     return (
-        <group ref={meshRef} rotation-z={MathUtils.degToRad(-23.5)} position={[earthDistance, 0, 0]}>
-            <Html>
-                <div onClick={() => {
-                    if (!meshRef.current) {
-                        return;
-                    }
-                    console.log(Object.values(meshRef.current.position));
-                    controls.target = new Vector3(...Object.values(meshRef.current.position));
-                    camera.lookAt(Object.values(meshRef.current.position));
-                }} className="text-xs m-2 tracking-[0.15em] glow hover:text-primary">EARTH</div>
-            </Html>
+        <group ref={ref} position={[earthDistance, 0, 0]}>
+            <PlanetName intoView={intoView} name={"Earth"} />
             <mesh>
                 <icosahedronGeometry args={[1, 10]} />
                 <meshStandardMaterial
@@ -57,7 +51,12 @@ function Earth() {
                 <meshStandardMaterial
                     map={earthCloudsTexture} blending={AdditiveBlending} />
             </mesh>
+            <mesh rotation={[Math.PI / 2, 0, 0]} position={[-earthDistance, 0, 0]}>
+                {/* <ringGeometry args={[earthDistance - 1, earthDistance, 64 * 6]} /> */}
+                <torusGeometry args={[earthDistance - 1, 0.2, 30, 64 * 6]} />
 
+                <meshBasicMaterial fog={false} color={"#577BC1"} side={DoubleSide} />
+            </mesh>
         </group>
     )
 }

@@ -10,18 +10,18 @@ function Mercury() {
     const { controls } = useThree();
     const ref = useRef(null);
 
-    function intoView(e){
-      
-        if(!ref.current){
+    function intoView(e) {
+
+        if (!ref.current) {
             return;
         }
 
         controls.target = new Vector3(...Object(ref.current.position));
-}
+    }
 
     return (
         <group ref={ref} position={[-mercuryDistance, 0, 0]}>
-            <PlanetName intoView={intoView} name={"mercury"}/>
+            <PlanetName intoView={intoView} name={"mercury"} />
             <mesh >
                 <icosahedronGeometry args={[2, 10]} />
                 <meshStandardMaterial map={texture} />

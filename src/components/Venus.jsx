@@ -29,7 +29,6 @@ function Venus() {
             <mesh>
                 <icosahedronGeometry args={[2, 10]} />
                 <meshStandardMaterial args={[5, 10]} map={atmosphere} />
-
             </mesh>
         </group>
     )
