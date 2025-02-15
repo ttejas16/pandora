@@ -1,7 +1,9 @@
 import { Html, Line, useTexture } from "@react-three/drei";
 import { AdditiveBlending, RingGeometry, SRGBColorSpace, Vector3 } from "three";
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useRef } from "react";
+import TWEEN from "@tweenjs/tween.js";
+import { config, useSpring,easings } from "@react-spring/three";
 
 function lookAt(ref, controls) {
     if (!ref.current) {
@@ -11,10 +13,60 @@ function lookAt(ref, controls) {
     controls.target = new Vector3(...Object.values(ref.current.position))
 }
 
+function compareTwo(v1, target) {
+    return (
+        v1.x <= target.x && v1.y <= target.y && v1.z <= target.z
+    )
+}
+
+function zoomAt(target, camera) {
+    const vector = {
+        dx: target.x - camera.position.x,
+        dy: target.y - camera.position.y,
+        dz: target.z - camera.position.z,
+    }
+
+    const v = new Vector3(vector.dx, vector.dy, vector.dz);
+    v.normalize()
+    const stopPoint = {
+        x: target.x - (v.x * 50),
+        y: target.y - (v.y * 50),
+        z: target.z - (v.z * 50),
+    }
+
+    v.multiplyScalar(50);
+
+
+    // console.log(stopPoint);
+
+    const id = setInterval(() => {
+
+        if (compareTwo(camera.position, stopPoint)) {
+            clearInterval(id);
+            return;
+        }
+
+        camera.position.x += v.x;
+        camera.position.y += v.y;
+        camera.position.z += v.z;
+
+        // camera.position.add(v);
+
+    }, 10);
+}
+
 function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor }) {
 
     const ref = useRef(null);
-    const { controls } = useThree();
+    const { camera, controls } = useThree();
+    const s = useSpring({
+        from: {
+            position: [0, 0, 0]
+        },
+        to: {
+            position: [0, 0, 0]
+        }
+    })
     const texture = useTexture(map.url);
 
     texture.colorSpace = SRGBColorSpace;
@@ -24,7 +76,26 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
         <group ref={ref} position={[distanceFromSun, 0, 0]}>
             <Html>
                 <div
-                    onClick={(e) => lookAt(ref, controls)}
+                    onClick={(e) => {
+                        lookAt(ref, controls);
+                        // zoomAt(controls.target, camera);
+                        s.position.start({
+                            from: {
+                                position: camera.position.toArray()
+                            },
+                            to: {
+                                position: [distanceFromSun - 10, 10, 10]
+                            },
+                            config: {
+                                precision: 0.0001,
+                                easing: easings.easeOutSine
+                            },
+                            onChange: (r) => {
+                                camera.position.set(...r);
+                            }
+                        })
+
+                    }}
                     className="text-xs m-2 tracking-[0.15em] glow hover:text-primary no-select">
                     {name?.toUpperCase()}
                 </div>

@@ -6,8 +6,8 @@ import { useRef } from "react";
 function HeroSection() {
     return (
         <div className="w-full h-[100vh] flex flex-col justify-center items-center">
-            <motion.img src={Comets} alt="comets image" className="w-full h-full absolute z-[1] object-cover" 
-                initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:1, delay:1.5 }}/>
+            <motion.img src={Comets} alt="comets image" className="w-full h-full absolute z-[1] object-cover"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.5 }} />
 
             <motion.div
                 initial={{ y: 100, }}
@@ -18,10 +18,10 @@ function HeroSection() {
                     Solar System In A Creative Way
                 </h2>
             </motion.div>
-            <motion.div 
+            <motion.div
                 initial={{ y: 100, }}
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
-                transition={{ duration: 0.65, delay:0.2 }}
+                transition={{ duration: 0.65, delay: 0.2 }}
                 className="z-[2]">
                 <h4 className="text-2xl font-light text-neutral-200 mt-3 ">
                     Visualize • Compare • Learn
@@ -31,9 +31,9 @@ function HeroSection() {
             <motion.div
                 initial={{ y: 100, }}
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
-                transition={{ duration: 0.65, delay:0.3 }}
+                transition={{ duration: 0.65, delay: 0.3 }}
                 className="z-[2]">
-                <a  href="#foo"
+                <a href="#foo"
                     className="block animate-move-y text-primary bg-gray-300 p-4 rounded-full mt-6 
                 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10 border-[1px] border-neutral-600">
                     <ChevronDown size={30} className="hover:scale-75 transition-all" />

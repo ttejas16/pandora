@@ -36,7 +36,7 @@ const planetRenderProperties = [
             additiveBlending: false
         },
         radius: 2,
-        accentColor: "#F9CB43"
+        accentColor: "#FFB22C"
     },
     {
         name: "Earth",
@@ -50,7 +50,7 @@ const planetRenderProperties = [
             additiveBlending: true
         },
         radius: 2,
-        accentColor: "#577BC1"
+        accentColor: "#2973B2"
     },
     {
         name: "Mars",
@@ -61,7 +61,7 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#C96868"
+        accentColor: "#740938"
     },
     {
         name: "Jupiter",
@@ -105,7 +105,7 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#27445D"
+        accentColor: "#27667B"
     },
 ]
 
