@@ -21,34 +21,35 @@ body {
     /* overflow: hidden; */
 }
 
-.no-select{
+.no-select {
     user-select: none;
 }
 
-.cursor-dot{
+.cursor-dot {
     width: 5px;
     height: 5px;
     background-color: white;
 }
 
-.cursor-outline{
+.cursor-outline {
     width: 30px;
     height: 30px;
     border: 2px solid white;
 }
 
 .cursor-dot,
-.cursor-outline{
+.cursor-outline {
     position: fixed;
     top: 0;
     left: 0;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     border-radius: 50%;
     z-index: 99;
     pointer-events: none;
 }
 
-button,a {
+button,
+a {
     cursor: none;
 }
 
@@ -70,27 +71,72 @@ button,a {
     aspect-ratio: 1;
     background: white;
     animation:
-      l1-1 2s  infinite,
-      l1-2 .5s infinite;
+        l1-1 2s infinite,
+        l1-2 .5s infinite;
 }
 
 .loader:after {
     background: theme('colors.primary');
-    animation-delay: -1s,0s;
+    animation-delay: -1s, 0s;
 }
 
 @keyframes l1-1 {
-    0%   {top:0   ;left:0}
-    25%  {top:100%;left:0}
-    50%  {top:100%;left:100%}
-    75%  {top:0   ;left:100%}
-    100% {top:0   ;left:0}
+    0% {
+        top: 0;
+        left: 0
+    }
+
+    25% {
+        top: 100%;
+        left: 0
+    }
+
+    50% {
+        top: 100%;
+        left: 100%
+    }
+
+    75% {
+        top: 0;
+        left: 100%
+    }
+
+    100% {
+        top: 0;
+        left: 0
+    }
 }
 
 @keyframes l1-2 {
-    80%,100% {transform: rotate(0.5turn)}
+
+    80%,
+    100% {
+        transform: rotate(0.5turn)
+    }
 }
 
-.glow{
+.glow {
     text-shadow: 0 0 8px #ffffff;
+}
+
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid theme('colors.neutral.800');
+    border-bottom-color: theme('colors.primary');
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

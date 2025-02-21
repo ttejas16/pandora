@@ -1,7 +1,6 @@
 import { ChevronDown, MoveDown } from "lucide-react";
 import Comets from "../assets/comets.png";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { motion } from "motion/react";
 
 function HeroSection() {
     return (
@@ -10,7 +9,7 @@ function HeroSection() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.5 }} />
 
             <motion.div
-                initial={{ y: 100, }}
+                initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
                 transition={{ duration: 0.65, }}
                 className="z-[2]">
@@ -19,23 +18,22 @@ function HeroSection() {
                 </h2>
             </motion.div>
             <motion.div
-                initial={{ y: 100, }}
+                initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
                 transition={{ duration: 0.65, delay: 0.2 }}
                 className="z-[2]">
-                <h4 className="text-2xl font-light text-neutral-200 mt-3 ">
+                <p className="text-2xl font-light text-neutral-200 mt-3 ">
                     Visualize • Compare • Learn
-                </h4>
+                </p>
             </motion.div>
-
             <motion.div
-                initial={{ y: 100, }}
+                initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
                 transition={{ duration: 0.65, delay: 0.3 }}
                 className="z-[2]">
                 <a href="#foo"
                     className="block animate-move-y text-primary bg-gray-300 p-4 rounded-full mt-6 
-                bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10 border-[1px] border-neutral-600">
+                    bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10 border-[1px] border-neutral-600">
                     <ChevronDown size={30} className="hover:scale-75 transition-all" />
                 </a>
             </motion.div>

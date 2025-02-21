@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { Link } from "react-router-dom";
 
 function Navbar() {
 
@@ -15,7 +16,7 @@ function Navbar() {
                         <button className="py-1 px-2 hover:text-primary transition-all">Home</button>
                         <button className="py-1 px-2 hover:text-primary transition-all">Learn</button>
                         <button className="py-1 px-2 hover:text-primary transition-all">About</button>
-                        <button className="py-1 px-2 hover:text-primary transition-all">Login</button>
+                        <Link to={"login"} className="py-1 px-2 hover:text-primary transition-all">Login</Link>
                     </div>
                 </div>
         </motion.div>
