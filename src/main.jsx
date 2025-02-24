@@ -7,6 +7,8 @@ import Root from './components/Root.jsx'
 import Login from './components/Login.jsx'
 import Signup from './components/Signup.jsx'
 import Topics from './components/Topics.jsx'
+import TopicView from './components/TopicView.jsx'
+import AddQuiz from './components/AddQuiz.jsx'
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,8 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
       { path: "topics", element: <Topics /> },
+      { path: "topics/:id", element: <TopicView /> },
+      { path: "topics/:id/add", element: <AddQuiz /> },
     ]
   },
 ])

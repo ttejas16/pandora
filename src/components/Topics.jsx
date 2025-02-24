@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import ManOnMoon from "../assets/ManOnMoon.svg"
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { Link } from "react-router-dom";
 
 function Topics() {
   const [filter, setFilter] = useState({ created: true, joined: true })
@@ -15,7 +16,7 @@ function Topics() {
 
         {/* Topbar */}
         <div className="w-full flex justify-between items-center border-b-[1px] border-neutral-900">
-          <div className="text-2xl font-medium text-primary ml-12">Pandora</div>
+          <Link to={"/"} className="text-2xl font-medium text-primary ml-12">Pandora</Link>
           <div className="flex gap-x-4 p-6">
             <button onClick={(e) => setShowJoinModal(!showJoinModal)} className="border-[1px] text-primary border-neutral-800 flex justify-center items-center w-12 h-12 rounded-full">
               <Plus size={20} strokeWidth={3} />
@@ -85,9 +86,9 @@ function TopicCard({ index }) {
       </div>
 
       <div className="flex justify-between items-center gap-y-2">
-        <button className="border-[1px] border-neutral-800 px-6 py-2 text-center rounded-md text-sm">
+        <Link to={`/topics/${index}`} className="border-[1px] border-neutral-800 px-6 py-2 text-center rounded-md text-sm">
           View
-        </button>
+        </Link>
         {
           index % 2 == 0 ?
             <div className="flex items-center gap-x-2">

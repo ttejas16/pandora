@@ -2,16 +2,42 @@ import { Link } from "react-router-dom";
 import { Atom, CircleAlert, Earth, Eye, EyeOff, Orbit, SunMoon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react"
+import { login } from "../api/auth";
+
+
+const initialData = {
+  email: "",
+  password: "",
+}
 
 function Login() {
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [data, setData] = useState(initialData);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+
+    const res = await login({ email:data.email, password:data.password });
+    if (!res.success) {
+      console.log("something went wrong");
+    }
+    else {
+      console.log(res.msg);
+    }
+
+    setLoading(false);
+  }
+
+  // console.log(data);
+  
 
   return (
     <>
       <section className="w-full h-screen flex justify-center items-center">
         <div className="flex flex-col items-center bg-neutral-950 border-[1px] border-neutral-900 rounded-lg px-12 py-16 w-[450px]">
-          <form className="w-full">
+          <form onSubmit={handleSubmit} className="w-full">
             <div className="flex flex-col items-center text-sm w-full">
               <p className="text-2xl font-bold">Sign in to Pandora</p>
               <div className="flex mt-1">
@@ -25,6 +51,10 @@ function Login() {
                   Email
                 </label>
                 <input
+                  required
+                  onChange={(e) => {
+                    setData({ ...data, email: e.currentTarget.value })
+                  }}
                   className="py-2 px-3 w-full
                                     placeholder:text-neutral-400
                                     outline-none bg-neutral-900 border-[1px] border-neutral-700 rounded-md"
@@ -32,17 +62,6 @@ function Login() {
                   autoFocus
                   placeholder="example@gmail.com"
                   name="email" />
-                {/* <AnimatePresence> */}
-                {error &&
-                  <motion.div
-                    exit={{ height: "0px", opacity: 0 }}
-                    initial={{ height: "0px", opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1, animationTimingFunction: "ease-in-out" }}
-                    className="flex gap-x-1 text-red-500 font-light tracking-wide">
-                    <CircleAlert size={20} strokeWidth={2} />
-                    <span>Invalid credentials!</span>
-                  </motion.div>}
-                {/* </AnimatePresence> */}
               </div>
               <div className="flex flex-col gap-y-2 text-sm w-full">
                 <label htmlFor="password">
@@ -50,6 +69,10 @@ function Login() {
                 </label>
                 <div className="flex bg-neutral-900 border-[1px] border-neutral-700 rounded-md">
                   <input
+                    required
+                    onChange={(e) => {
+                      setData({ ...data, password: e.currentTarget.value })
+                    }}
                     className="py-2 px-3 w-full
                   placeholder:text-neutral-400
                   outline-none bg-inherit rounded-md"
@@ -65,24 +88,11 @@ function Login() {
                   </button>
                 </div>
 
-                {/* <AnimatePresence> */}
-                {error &&
-                  <motion.div
-                    exit={{ height: "0px", opacity: 0 }}
-                    initial={{ height: "0px", opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1, animationTimingFunction: "ease-in-out" }}
-                    className="flex gap-x-1 text-red-500 font-light tracking-wide">
-                    <CircleAlert size={20} strokeWidth={2} />
-                    <span>Invalid credentials!</span>
-                  </motion.div>}
-                {/* </AnimatePresence> */}
-
               </div>
 
             </div>
             <button
-              onClick={() => setError(!error)}
-              type="button"
+              type="submit"
               className="mt-8 w-full bg-[#9512c0] font-medium py-2 rounded-md text-sm">
               Login
             </button>
