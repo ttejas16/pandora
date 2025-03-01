@@ -1,7 +1,7 @@
 import { Html, Line, useTexture } from "@react-three/drei";
 import { AdditiveBlending, RingGeometry, SRGBColorSpace, Vector3 } from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { config, useSpring, easings } from "@react-spring/three";
 import { useModelContext } from "../hooks/modelContext";
 function lookAt(ref, controls) {
@@ -12,7 +12,9 @@ function lookAt(ref, controls) {
   controls.target = new Vector3(...Object.values(ref.current.position))
 }
 
-function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setActiveModel }) {
+function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setActiveModel,
+  revolutionSpeed, rotationSpeed
+ }) {
   const modelContext = useModelContext();
   const ref = useRef(null);
   const { camera, controls } = useThree();
@@ -36,8 +38,19 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
     }
   }, []);
 
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    ref.current.rotation.y += 0.001;
+    ref.current.position.x = Math.cos(t * rotationSpeed) * distanceFromSun;
+    ref.current.position.z = Math.sin(t * rotationSpeed) * distanceFromSun;
+  })
+
   return (
     <>
+      {
+        distanceFromSun &&
+        <Orbit radius={distanceFromSun} accentColor={accentColor} />
+      }
       <group ref={ref} position={[distanceFromSun, 0, 0]}>
         <Html>
           <div
@@ -45,7 +58,6 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
 
               lookAt(ref, controls);
               setFocusedOrbit(ref);
-              // setClicked(true);
 
               s.position.start({
                 from: {
@@ -87,10 +99,7 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
             blending={atmosphereMap.additiveBlending}
           />
         }
-        {
-          distanceFromSun &&
-          <Orbit radius={distanceFromSun} accentColor={accentColor} />
-        }
+
       </group>
     </>
   )
@@ -121,7 +130,7 @@ function Orbit({ radius, accentColor }) {
     points.push([positions[i], positions[i + 1], positions[i + 2]]);
   }
 
-  return <Line position={[-radius, 0, 0]} points={points} rotation={[Math.PI / 2, 0, 0]} color={accentColor} lineWidth={1} />
+  return <Line position={[0, 0, 0]} points={points} rotation={[Math.PI / 2, 0, 0]} color={accentColor} lineWidth={1} />
 }
 
 

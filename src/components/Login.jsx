@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Atom, CircleAlert, Earth, Eye, EyeOff, Orbit, SunMoon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react"
 import { login } from "../api/auth";
-
+import ErrorMessage from "./ErrorMessage";
+import { useAuthContext } from "../hooks/authContext";
+import Spinner from "./Spinner";
+import SpinnerSmall from "./SpinnerSmall";
 
 const initialData = {
   email: "",
@@ -11,27 +14,37 @@ const initialData = {
 }
 
 function Login() {
+  const navigate = useNavigate();
+  const authContext = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [data, setData] = useState(initialData);
+  const [formData, setFormData] = useState(initialData);
+  const [errors, setErrors] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
+    setErrors(null);
 
-    const res = await login({ email:data.email, password:data.password });
-    if (!res.success) {
-      console.log("something went wrong");
-    }
-    else {
-      console.log(res.msg);
+    const { data, error } = await login({ email: formData.email, password: formData.password });
+    // console.log(data, error);
+
+    if (error) {
+      setTimeout(() => {
+        setLoading(false);
+        setErrors(error);
+      }, 1000);
+      return;
     }
 
-    setLoading(false);
+    // update user here
+    authContext.setUser({ ...data });
+
+    setTimeout(() => {
+      setLoading(false);
+      navigate("/topics", { replace: true });
+    }, 1000);
   }
-
-  // console.log(data);
-  
 
   return (
     <>
@@ -53,7 +66,7 @@ function Login() {
                 <input
                   required
                   onChange={(e) => {
-                    setData({ ...data, email: e.currentTarget.value })
+                    setFormData({ ...formData, email: e.currentTarget.value })
                   }}
                   className="py-2 px-3 w-full
                                     placeholder:text-neutral-400
@@ -71,7 +84,7 @@ function Login() {
                   <input
                     required
                     onChange={(e) => {
-                      setData({ ...data, password: e.currentTarget.value })
+                      setFormData({ ...formData, password: e.currentTarget.value })
                     }}
                     className="py-2 px-3 w-full
                   placeholder:text-neutral-400
@@ -88,13 +101,16 @@ function Login() {
                   </button>
                 </div>
 
+                <ErrorMessage msg={errors} />
               </div>
-
             </div>
             <button
+              disabled={loading}
               type="submit"
-              className="mt-8 w-full bg-[#9512c0] font-medium py-2 rounded-md text-sm">
-              Login
+              className="mt-8 w-full bg-[#9512c0] font-medium py-2 rounded-md text-sm disabled:bg-primary/30 flex justify-center">
+              {
+                loading ? <SpinnerSmall className="text-primary fill-neutral-100"/> : "Login"
+              }
             </button>
             <div className="flex justify-center gap-3 my-10">
               <Orbit className="hover:rotate-180 duration-200" />
@@ -106,7 +122,6 @@ function Login() {
             <span>Don't have an account ?</span>
             <Link to={"/signup"} className="mx-1 underline">Sign Up</Link>
           </div>
-
         </div>
       </section>
     </>

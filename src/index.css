@@ -17,7 +17,7 @@ body {
     font-family: "Inter", serif;
     font-optical-sizing: auto;
     font-style: normal;
-    cursor: none;
+    /* cursor: none; */
     /* overflow: hidden; */
 }
 
@@ -25,7 +25,7 @@ body {
     user-select: none;
 }
 
-.cursor-dot {
+/* .cursor-dot {
     width: 5px;
     height: 5px;
     background-color: white;
@@ -51,7 +51,7 @@ body {
 button,
 a {
     cursor: none;
-}
+} */
 
 
 .loader {
@@ -139,4 +139,24 @@ a {
     100% {
         transform: rotate(360deg);
     }
+}
+
+
+
+
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: theme('colors.neutral.950');
+}
+::-webkit-scrollbar-track:hover {
+    background: theme('colors.neutral.950');
+}
+::-webkit-scrollbar-thumb {
+    background: theme('colors.neutral.500');
+}
+::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.neutral.400');
 }

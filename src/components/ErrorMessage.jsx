@@ -1,7 +1,7 @@
 import { CircleAlert } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
-function Error({ msg }) {
+function ErrorMessage({ msg }) {
     return (
         <AnimatePresence>
             {
@@ -12,11 +12,11 @@ function Error({ msg }) {
                     animate={{ height: "auto", animationTimingFunction: "ease-in-out", opacity: 1 }}
                     className="flex gap-x-1 text-red-500 font-light tracking-wide">
                     <CircleAlert size={20} strokeWidth={2} />
-                    <span>Invalid credentials!</span>
+                    <span>{msg}</span>
                 </motion.div>
             }
         </AnimatePresence>
     )
 }
 
-export default Error;
+export default ErrorMessage;

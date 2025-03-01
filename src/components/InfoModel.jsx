@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 function InfoModel() {
     const modelContext = useModelContext();
-    console.log(modelContext);
+    // console.log(modelContext);
     
     const [springs, api] = useSpring(() => ({
         from: {

@@ -9,24 +9,33 @@ import Signup from './components/Signup.jsx'
 import Topics from './components/Topics.jsx'
 import TopicView from './components/TopicView.jsx'
 import AddQuiz from './components/AddQuiz.jsx'
+import PrivateWrapper from './components/PrivateWrapper.jsx'
+import AuthProvider from './hooks/AuthProvider.jsx'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     children: [
-      { path: "/", element: <App /> },
+      { index: true, element: <App /> },
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
-      { path: "topics", element: <Topics /> },
-      { path: "topics/:id", element: <TopicView /> },
-      { path: "topics/:id/add", element: <AddQuiz /> },
+      {
+        path: "topics", element: <PrivateWrapper />,
+        children: [
+          { index: true, element: <Topics /> },
+          { path: ":id", element: <TopicView /> },
+          { path: ":id/add", element: <AddQuiz /> },
+        ]
+      },
     ]
   },
 ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 )

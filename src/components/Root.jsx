@@ -11,7 +11,7 @@ function Root() {
 
     return (
         <>
-            <Cursor />
+            {/* <Cursor /> */}
             <Outlet />
         </>
     )

@@ -10,7 +10,8 @@ import { useSpring, a } from "@react-spring/three";
 import Camera from "./Camera";
 
 function Scene() {
-    // const { active } = useProgress();
+    
+
     const [activeModel, setActiveModel] = useState(null);
 
     const focusedOrbit = useRef(null);
@@ -25,25 +26,28 @@ function Scene() {
     }
 
 
-    useFrame(() => {
-        if (!focusedOrbit.current) {
-        }
-        return;
+    // useFrame(() => {
+    //     if (!focusedOrbit.current) {
+    //     }
+    //     return;
 
-        if (camera.position.x < 100 || camera.position.y < 100 || camera.position.z < 100) {
-            focusedOrbit.current.visible = false;
-        }
-        else {
-            focusedOrbit.current.visible = true;
-        }
-    })
+    //     if (camera.position.x < 100 || camera.position.y < 100 || camera.position.z < 100) {
+    //         focusedOrbit.current.visible = false;
+    //     }
+    //     else {
+    //         focusedOrbit.current.visible = true;
+    //     }
+    // })
 
     return (
         <>
                 <ambientLight intensity={1} />
                 <Camera position={[4000, 5000, 9000]} />
                 {/* <axesHelper args={[2000]} /> */}
-                <TrackballControls makeDefault rotateSpeed={2} minDistance={5} />
+                <TrackballControls onStart={() => {
+                    console.log("zoom");
+                    
+                }} makeDefault rotateSpeed={2} minDistance={5} />
                 {
                     planetRenderProperties.map((info, index) => {
                         return <Planet
@@ -56,6 +60,8 @@ function Scene() {
                             distanceFromSun={info.distanceFromSun}
                             name={info.name}
                             accentColor={info.accentColor}
+                            revolutionSpeed={info.revolutionSpeed}
+                            rotationSpeed={info.rotationSpeed}
                         />
                     })
                 }

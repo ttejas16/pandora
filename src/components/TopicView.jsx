@@ -19,7 +19,7 @@ function TopicView() {
                         {
                             Array.from({ length: 20 }).map((_, index) => {
                                 return (
-                                    <div className="flex gap-x-2 justify-center items-center text-sm border-b-[1px] border-neutral-900 w-full py-3">
+                                    <div key={index} className="flex gap-x-2 justify-center items-center text-sm border-b-[1px] border-neutral-900 w-full py-3">
                                         <div className="h-10 w-10 text-xs rounded-full bg-neutral-800 grid place-content-center">SW</div>
                                         <div className="text-sm">Splinter Wolf</div>
                                     </div>

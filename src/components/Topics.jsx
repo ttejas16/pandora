@@ -4,10 +4,15 @@ import ManOnMoon from "../assets/ManOnMoon.svg"
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../hooks/authContext";
 
 function Topics() {
   const [filter, setFilter] = useState({ created: true, joined: true })
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const authContext = useAuthContext();
+
+  console.log(authContext.user);
+  
 
   return (
     <>

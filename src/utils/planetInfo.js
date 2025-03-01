@@ -10,7 +10,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#577BC1"
+        accentColor: "#577BC1",
+        revolutionSpeed: 0.001,
+        rotationSpeed: 0,
     },
     {
         name: "Mercury",
@@ -21,7 +23,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#727D73"
+        accentColor: "#727D73",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.1,
     },
     {
         name: "Venus",
@@ -36,7 +40,9 @@ const planetRenderProperties = [
             additiveBlending: false
         },
         radius: 2,
-        accentColor: "#FFB22C"
+        accentColor: "#FFB22C",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.01,
     },
     {
         name: "Earth",
@@ -50,7 +56,9 @@ const planetRenderProperties = [
             additiveBlending: true
         },
         radius: 2,
-        accentColor: "#2973B2"
+        accentColor: "#2973B2",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.01,
     },
     {
         name: "Mars",
@@ -61,7 +69,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#740938"
+        accentColor: "#740938",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.01,
     },
     {
         name: "Jupiter",
@@ -72,7 +82,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2.5,
-        accentColor: "#754E1A"
+        accentColor: "#754E1A",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.01,
     },
     {
         name: "Saturn",
@@ -83,7 +95,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#D39D55"
+        accentColor: "#D39D55",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.01,
     },
     {
         name: "Uranus",
@@ -94,7 +108,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#3D8D7A"
+        accentColor: "#3D8D7A",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.0001,
     },
     {
         name: "Neptune",
@@ -105,7 +121,9 @@ const planetRenderProperties = [
         },
         atmosphereMap: null,
         radius: 2,
-        accentColor: "#27667B"
+        accentColor: "#27667B",
+        revolutionSpeed: 0.0001,
+        rotationSpeed: 0.0001,
     },
 ]
 

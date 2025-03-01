@@ -8,9 +8,10 @@ function ModelProvider({ children }) {
 
 
     useEffect(() => {
-        setIsLoading(true);
-        // fetch
-        setTimeout(() => setIsLoading(false), 3000);
+        if (!activeModel) {
+            return;
+        }
+        setIsLoading(false);
     },[activeModel]);
 
     return (
