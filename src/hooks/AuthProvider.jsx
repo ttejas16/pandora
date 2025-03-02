@@ -5,7 +5,7 @@ import { getUser } from "../api/auth";
 function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
-    console.log(user);
+    // console.log(user);
     
 
     async function fetchUser(){

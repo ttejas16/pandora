@@ -1,18 +1,47 @@
 import { Check, Clipboard, Image, Plus, RefreshCw, Search, User, X } from "lucide-react";
 import Navbar from "./Navbar";
 import ManOnMoon from "../assets/ManOnMoon.svg"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/authContext";
+import { createTopic, getTopics, joinTopic } from "../api/user";
+import SpinnerSmall from "./SpinnerSmall";
 
 function Topics() {
+  const [topics, setTopics] = useState([]);
   const [filter, setFilter] = useState({ created: true, joined: true })
   const [showJoinModal, setShowJoinModal] = useState(false);
   const authContext = useAuthContext();
 
-  console.log(authContext.user);
-  
+
+  function appendTopic(topic = {}) {
+    setTopics(p => [...p, topic]);
+  }
+
+  async function fetchTopics() {
+    const { data, error } = await getTopics();
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setTopics([...data])
+  }
+
+  useEffect(() => {
+    // console.log("fetching");
+
+    fetchTopics();
+
+    return () => {
+      // console.log("reset");
+      setTopics((p) => []);
+    }
+  }, []);
+
+  // console.log(topics);
+
 
   return (
     <>
@@ -60,59 +89,107 @@ function Topics() {
         {/* Grid */}
         <div className="w-full grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-8 px-12 overflow-y-auto">
           {
-            Array.from({ length: 15 }).map((_, i) => {
-              return <TopicCard key={i} index={i} />
+            topics.map((topic) => {
+              return <TopicCard key={topic.topicId} topic={topic} />
             })
           }
         </div>
       </div>
-      <JoinTopicModal visible={showJoinModal} setVisibility={() => setShowJoinModal((p) => !p)} />
+      <JoinTopicModal
+        appendTopic={appendTopic}
+        visible={showJoinModal}
+        setVisibility={() => setShowJoinModal((p) => !p)} />
 
     </>
   )
 }
 
 
-function TopicCard({ index }) {
+function TopicCard({ topic }) {
+
   return (
     <div className="rounded-md bg-neutral-950 p-4">
       <div className="rounded-t-md w-full flex flex-col bg-neutral-950 gap-y-1 pl-2 pt-2">
-        <p className="text-2xl">Topic Title</p>
-        <p className="text-sm text-neutral-300">Topic Subtitle</p>
+        <p className="text-2xl">{topic.topicName}</p>
+        <p className="text-sm text-neutral-300">{topic.topicSubtitle}</p>
       </div>
 
       <div className="py-3">
 
         <div className="rounded-md flex justify-center items-center w-full h-[150px] bg-primary/10 p-">
-          <Image className="text-neutral-600 " />
-
-          {/* <img src={ManOnMoon} alt="img" className="w-full h-full"/> */}
+          {/* <Image className="text-neutral-600 " /> */}
+          <img src={"https://img.freepik.com/free-photo/galaxy-nature-aesthetic-background-starry-sky-mountain-remixed-media_53876-126761.jpg?t=st=1740856833~exp=1740860433~hmac=75e46630dc1412eeb97a9e4f105eb7c66003c323e34fc04e99cf1ab48093660d&w=1060"} alt="img" className="w-full h-full object-cover rounded-md" />
         </div>
       </div>
 
       <div className="flex justify-between items-center gap-y-2">
-        <Link to={`/topics/${index}`} className="border-[1px] border-neutral-800 px-6 py-2 text-center rounded-md text-sm">
+        <Link state={topic} to={`/topics/${topic.topicId}`}
+          className="border-[1px] border-neutral-800 px-6 py-2 text-center rounded-md text-sm">
           View
         </Link>
         {
-          index % 2 == 0 ?
-            <div className="flex items-center gap-x-2">
-              <div className="rounded-full bg-sky-400 size-[10px]"></div>
-              <span className="pr-2">Public</span>
-            </div> :
-            <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-2">
+            { 
+              topic.isPublic ? 
+              <div className="rounded-full bg-sky-400 size-[10px]"></div>:
               <div className="rounded-full bg-yellow-400 size-[10px]"></div>
-              <span className="pr-2">Private</span>
-            </div>
+            }
+            <span className="pr-2">{topic.isPublic ? "Public" : "Private"}</span>
+          </div>
         }
       </div>
     </div>
   )
 }
 
-function JoinTopicModal({ visible, setVisibility }) {
+function JoinTopicModal({ visible, setVisibility, appendTopic }) {
+  const [loading, setLoading] = useState(false);
   const [activeButton, setActiveButton] = useState("New");
   const [topicType, setTopicType] = useState("public");
+  const [formData, setFormData] = useState({ title: null, subTitle: null, url: "temporary" });
+  const [resultCode, setResultCode] = useState(null);
+  const [topicCode, setTopicCode] = useState(null);
+  console.log(topicCode);
+  
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setResultCode(null);
+
+    const { data, error } = await createTopic({ ...formData, type: topicType });
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+      appendTopic(data);
+      setResultCode(data.topicCode);
+
+    }, 1500);
+  }
+
+
+  async function handleJoinTopic(e) {
+    e.preventDefault();
+    setLoading(true);
+    setResultCode(null);
+
+    const { data,error } = await joinTopic({ topicCode });
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+      appendTopic(data);
+      setVisibility();
+      setResultCode(null);
+
+    }, 1500);
+  }
 
   return (
 
@@ -153,13 +230,15 @@ function JoinTopicModal({ visible, setVisibility }) {
               activeButton == "New" ?
                 <>
                   <div className="px-4 py-6">
-                    <form action="" className="flex flex-col gap-y-5">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-y-5">
 
                       <div className="flex flex-col gap-y-2 text-sm w-full">
                         <label htmlFor="username">
                           Topic Title
                         </label>
                         <input
+                          onChange={(e) => setFormData({ ...formData, title: e.currentTarget.value })}
+                          required
                           className="py-2 px-3
                     text-sm
                    placeholder:text-neutral-400
@@ -173,12 +252,14 @@ function JoinTopicModal({ visible, setVisibility }) {
                           Topic Subtitle
                         </label>
                         <input
+                          onChange={(e) => setFormData({ ...formData, subTitle: e.currentTarget.value })}
+                          required
                           className="py-2 px-3
                     text-sm
                    placeholder:text-neutral-400
                    outline-none bg-neutral-900 border-[1px] border-neutral-700 rounded-md"
                           type="text"
-                          name="topicName"
+                          name="topicSubtitle"
                           placeholder="Learn Everything about gravity... " />
                       </div>
 
@@ -187,7 +268,7 @@ function JoinTopicModal({ visible, setVisibility }) {
                         <input type="text" className="hidden" name="imageUrl" />
                         <div className="relative rounded-md flex justify-center items-center w-full h-[150px] bg-primary/10 mt-1">
                           <Image className="text-neutral-600 " />
-                          <button className="hover:rotate-90 duration-200 absolute -bottom-2 -right-2 rounded-full border-[1px] border-neutral-800 bg-neutral-900 p-2">
+                          <button type="button" className="hover:rotate-90 duration-200 absolute -bottom-2 -right-2 rounded-full border-[1px] border-neutral-800 bg-neutral-900 p-2">
                             <RefreshCw size={18} />
                           </button>
                         </div>
@@ -210,18 +291,33 @@ function JoinTopicModal({ visible, setVisibility }) {
                         </button>
                       </div>
 
-                      <button className="bg-primary/60 rounded-md text-xs px-6 py-2 w-max align-end">
-                        Create Topic
+                      <button disabled={loading} type="submit" className="bg-primary/60 rounded-md text-xs px-6 py-2 w-max align-end disabled:bg-primary/30">
+                        {loading ? <SpinnerSmall className="w-3 text-neutral-500 fill-neutral-200" /> : "Create Topic"}
                       </button>
-                      <div className="text-sm flex items-center">
-                        <span>
-                          Topic Code
-                        </span>
-                        <span className="mx-2 py-1 px-3 bg-neutral-700 rounded-md flex gap-x-2">
-                          fd683X2dfe3
-                          <Clipboard size={18} />
-                        </span>
-                      </div>
+                      {
+                        resultCode &&
+                        <div className="text-sm flex items-center">
+                          <span>
+                            Topic Code
+                          </span>
+                          <span 
+                            onClick={e => {
+                              navigator.clipboard.writeText(e.currentTarget.textContent)
+                              e.currentTarget.classList.add("text-lime-500");
+
+                              setTimeout(() => { 
+
+                                e.target.classList.remove("text-lime-500");
+                                console.log(e.target.classList);
+                                 
+                              },1000)
+                            }} 
+                            className="mx-2 py-1 px-3 bg-neutral-700 rounded-md flex gap-x-2 cursor-pointer">
+                            {resultCode}
+                            <Clipboard size={18} />
+                          </span>
+                        </div>
+                      }
 
                     </form>
                   </div>
@@ -230,20 +326,22 @@ function JoinTopicModal({ visible, setVisibility }) {
                 <>
                   <div className="px-4 py-6 flex justify-center">
 
-                    <form action="" className="mt-40 w-full sm:w-1/2 flex h-full flex-col text-sm md:text-normal justify-center items-center gap-y-3">
+                    <form onSubmit={handleJoinTopic} className="mt-40 w-full sm:w-1/2 flex h-full flex-col text-sm md:text-normal justify-center items-center gap-y-3">
                       <label htmlFor="topicCode" className="text-lg font-light text-neutral-300">
                         Use A Topic Code
                       </label>
                       <input
+                        onChange={e => setTopicCode(e.currentTarget.value)}
+                        required
                         className="py-2 px-3 w-full
                           placeholder:text-neutral-400
                           outline-none bg-neutral-900 border-[1px] border-neutral-700 rounded-md"
                         type="text"
                         name="topicCode"
                         placeholder="Enter code here" />
-                        <button className="bg-primary/60 px-14 py-3 w-full rounded-md text-sm">
-                          Join
-                        </button>
+                      <button disabled={loading} type="submit" className="bg-primary/60 disabled:bg-primary/30 px-14 py-3 w-full rounded-md text-sm flex justify-center">
+                        { loading  ? <SpinnerSmall className="text-neutral-500 fill-neutral-200"/> : "Join Topic" }
+                      </button>
                     </form>
                   </div>
                 </>
