@@ -1,50 +1,135 @@
-import { CalendarDays, Check, ListPlus } from "lucide-react";
+import { CalendarDays, Check, CheckCheck, ListPlus, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { div } from "motion/react-client";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const emptyQuestion = { question: null, options: [null, null, null, null], correctOption: null };
+
+const initialQuestions = [
+    { question: null, options: [null, null, null, null], correctOption: null },
+    { question: null, options: [null, null, null, null], correctOption: null },
+]
 
 function AddQuiz() {
-    return (
-        <div className="w-full h-screen flex flex-col justify-start items-center">
-            <div className="rounded-md w-[40%] border-[1px] border-neutral-800 bg-neutral-950 px-8 pt-6 pb-8 my-4 border-dashed">
+    const [questions, setQuestions] = useState(initialQuestions);
 
-                <div className="flex justify-between items-end">
-                    <div className="flex justify-start flex-col w-1/2">
-                        <input
-                            className="py-2 px-3 w-[70%]
+    const updateQuestion = useCallback((questionIndex, newQuestion) => {
+        setQuestions(p => {
+            return p.map((q, index) => {
+                if (index == questionIndex) {
+                    return { ...q, question: newQuestion }
+                }
+
+                return q;
+            })
+        })
+    }, [questions]);
+
+    const updateOption = useCallback((questionIndex, optionIndex, newOption) => {
+        setQuestions(p => {
+            return p.map((q, index) => {
+                if (index == questionIndex) {
+                    const newMappedOptions = q.options.map((o, oIndex) => {
+                        if (oIndex == optionIndex) {
+                            return newOption;
+                        }
+                        return o;
+                    })
+
+                    return { ...q, options: newMappedOptions }
+                }
+
+                return q;
+            })
+        })
+    }, [questions]);
+
+    const setCorrectOption = useCallback((questionIndex, correctOption) => {
+        setQuestions(p => {
+            return p.map((q, index) => {
+                if (index == questionIndex) {
+                    return { ...q, correctOption: correctOption }
+                }
+
+                return q;
+            })
+        })
+    }, [questions]);
+
+    const addQuestion = useCallback(() => {
+        setQuestions(p => {
+            return [...p, structuredClone(emptyQuestion)]
+        })
+    }, [questions]);
+
+    const deleteQuestion = useCallback((questionIndex) => {
+        setQuestions(questions.filter((_, index) => questionIndex != index));
+    }, [questions]);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        console.log(questions);
+
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="w-full h-screen flex flex-col justify-start items-center pb-36 overflow-y-auto">
+                <div className="rounded-md w-[40%] border-[1px] border-neutral-800 bg-neutral-950 px-8 pt-6 pb-8 my-4 border-dashed sticky top-3 z-10">
+
+                    <div className="flex justify-between items-end">
+                        <div className="flex justify-start flex-col w-1/2">
+                            <input
+                                required
+                                className="py-2 px-3 w-[70%]
                         placeholder:text-neutral-400
                         outline-none bg-inherit border-b-[1px] border-primary/60"
-                            type="text"
-                            placeholder="Quiz Title..."
-                        />
-                        <input
-                            className="py-2 px-3
+                                type="text"
+                                placeholder="Quiz Title..."
+                            />
+                            <input
+                                required
+                                className="py-2 px-3
                         placeholder:text-neutral-400 mt-4
                         outline-none bg-inherit bg-inherit border-b-[1px] border-primary/60"
-                            type="text"
-                            placeholder="Quiz Description..."
-                        />
+                                type="text"
+                                placeholder="Quiz Description..."
+                            />
+                        </div>
+                        <div className="flex gap-x-4 items-end justify-center">
+                            <button onClick={(e) => addQuestion()} type="button" className="text-yellow-700">
+                                <ListPlus />
+                            </button>
+                            <button type="button" className="text-sky-600">
+                                <CalendarDays />
+                            </button>
+                            <button type="submit" className="text-lime-300">
+                                <Check />
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex gap-x-4 items-end justify-center">
-                        <button className="text-yellow-700">
-                            <ListPlus />
-                        </button>
-                        <button className="text-sky-600">
-                            <CalendarDays />
-                        </button>
-                        <button className="text-lime-300">
-                            <Check />
-                        </button>
-                    </div>
-                </div>
 
+                </div>
+                <div className="w-[60%] rounded-md border-[1px] border-neutral-800 bg-neutral-950 mt-4 border-dashed">
+                    {
+                        questions.map((question, index) => {
+                            return (
+
+                                <Question
+                                    {...question}
+                                    key={index}
+                                    intId={index}
+                                    updateQuestion={updateQuestion}
+                                    updateOption={updateOption}
+                                    setCorrectOption={setCorrectOption}
+                                    deleteQuestion={deleteQuestion}
+                                />
+                            )
+                        })
+                    }
+                </div>
             </div>
-            <div className="w-[60%] rounded-md border-[1px] border-neutral-800 bg-neutral-950 mt-4 border-dashed">
-                {
-                    Array.from({ length:10 }).map((_, index) => {
-                        return <Question key={index}/>
-                    })
-                }
-            </div>
-        </div>
+        </form>
     )
 }
 
@@ -74,49 +159,91 @@ function DatePicker() {
 }
 
 
-function Question() {
+function Question({ question, options, correctOption, intId, updateQuestion, updateOption, setCorrectOption, deleteQuestion }) {
+    // const [exit, setExit] = useState(false);
+
+    const ref = useRef(null);
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.scrollIntoView();
+        }
+    }, [])
+
     return (
-        <div className="border-b-[1px] border-dashed border-rose-200 p-6 px-10">
+        <motion.div
+            ref={ref}
+            initial={{ x: -20, opacity: 0, animationTimingFunction: "ease-out" }}
+            animate={{ x: 0, opacity: 1, animationTimingFunction: "ease-out" }}
+            className={`border-b-[1px] border-dashed border-rose-200 p-6 px-10 relative`}>
+            <button
+                type="button"
+                onClick={e => deleteQuestion(intId)}
+                title="Remove Question"
+                className="text-neutral-500 absolute right-4 top-4">
+                <X size={15} />
+            </button>
             <div className="flex items-center">
-                <div className="w-3 h-3 rounded-full bg-cyan-400">
+                <div className="w-4 h-4 rounded-full bg-cyan-400">
                 </div>
                 <input
-                    className="py-2 px-3 w-[70%]
+                    className="py-2 px-3 w-full
                     placeholder:text-neutral-400
                     outline-none bg-inherit text-lg font-light tracking-wider"
                     type="text"
                     name=""
                     id=""
-                    value={"What Would be the gravity of moon?"}
+                    required
+                    placeholder="Enter question here..."
+                    value={question ?? ""}
+                    onChange={e => updateQuestion(intId, e.currentTarget.value)}
                 />
             </div>
             <div className="flex flex-col mx-2 my-4 gap-y-4">
-                <div className="flex gap-x-2 items-center">
-                    <div className="border-[1px] border-primary rounded-full h-5 w-5 grid place-content-center">
-                        <div className="bg-primary rounded-full h-3 w-3"></div>
-                    </div>
-                    <span>10000g</span>
-                </div>
-                <div className="flex gap-x-2 items-center">
-                    <div className="border-[1px] border-primary rounded-full h-5 w-5 grid place-content-center">
-                        <div className="bg-primary rounded-full h-3 w-3"></div>
-                    </div>
-                    <span>10g</span>
-                </div>
-                <div className="flex gap-x-2 items-center">
-                    <div className="border-[1px] border-primary rounded-full h-5 w-5 grid place-content-center">
-                        <div className="bg-primary rounded-full h-3 w-3"></div>
-                    </div>
-                    <span>1000g</span>
-                </div>
-                <div className="flex gap-x-2 items-center">
-                    <div className="border-[1px] border-primary rounded-full h-5 w-5 grid place-content-center">
-                        <div className="bg-primary rounded-full h-3 w-3"></div>
-                    </div>
-                    <span>1/6 of Earth's G</span>
-                </div>
+                {
+                    options.map((option, optionIndex) => {
+                        return (
+
+                            <div key={optionIndex} className="flex gap-x-2 items-center">
+                                {/* <div className="border-[1px] border-primary rounded-full h-6 w-6 flex justify-center items-center"> */}
+                                {
+                                    (correctOption && (correctOption == option)) ?
+                                        <div className="bg-lime-500 rounded-full h-3 w-3"></div> :
+                                        <div className="bg-rose-600 rounded-full h-3 w-3"></div>
+                                }
+                                {/* </div> */}
+                                <input
+                                    className="py-1 px-3 w-full
+                                    placeholder:text-neutral-400
+                                    outline-none bg-inherit text-sm font-light tracking-wider"
+                                    type="text"
+                                    name=""
+                                    id=""
+                                    required
+                                    placeholder={`Option ${optionIndex + 1}`}
+                                    value={option ?? ""}
+                                    onChange={e => updateOption(intId, optionIndex, e.currentTarget.value)}
+                                />
+                                <button
+                                    tabIndex={-1}
+                                    onClick={(e) => {
+                                        if (!option) {
+                                            return;
+                                        }
+
+                                        setCorrectOption(intId, option)
+                                    }}
+                                    type="button"
+                                    title="Mark Correct Option"
+                                    className="text-lime-300">
+                                    <CheckCheck size={18} />
+                                </button>
+                            </div>
+                        )
+                    })
+                }
             </div>
-        </div>
+        </motion.div>
+
     )
 }
 
