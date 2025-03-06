@@ -2,13 +2,16 @@ import { BookMarked, Image, NotebookPen, Pencil, Plus, SwatchBook, Trash2, Users
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { getTopicUsers } from "../api/user";
+import { getTests, getTopicUsers } from "../api/user";
+import SpinnerSmall from "./SpinnerSmall";
 
 function TopicView() {
     const { id } = useParams();
     const location = useLocation();
     const [topic, setTopic] = useState(location.state);
     const [topicUsers, setTopicUsers] = useState([]);
+    const [testLoading, setTestLoading] = useState(true);
+    const [topicTests, setTopicTests] = useState([]);
 
     async function fetchTopicUsers() {
         const { data, error } = await getTopicUsers(topic.topicId);
@@ -20,8 +23,22 @@ function TopicView() {
         setTopicUsers(data.users);
     }
 
+    async function fetchTopicTests() {
+        const { data, error } = await getTests(topic.topicId);
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        setTopicTests(data.tests);
+        setTimeout(() => {
+            setTestLoading(false);
+        },1000);
+    }
+
     useEffect(() => {
         fetchTopicUsers();
+        fetchTopicTests();
     }, []);
 
     return (
@@ -78,6 +95,7 @@ function TopicView() {
                                     topic.isOwner &&
                                     <Link
                                         to={`/topics/${topic.topicId}/add`}
+                                        state={topic}
                                         className="text-sm flex justify-center items-center gap-x-1 px-3 py-2 border-[1px] border-neutral-800 text-neutral-500 rounded-md">
                                         <Plus size={15} className="text-primary" />
                                         <div>
@@ -88,10 +106,24 @@ function TopicView() {
                             </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 overflow-y-auto h-[70%] pr-3 py-3 gap-3">
-                        {Array.from({ length: 10 }).map((_, index) => {
-                            return <QuizCard key={index} />
-                        })}
+                    <div className="grid grid-cols-2 overflow-y-auto h-[70%] pr-3 py-3 gap-3 place-content-start">
+                        {
+                            testLoading &&
+                            <div className="flex col-span-3 justify-center items-center mt-[25%]">
+                                <SpinnerSmall className="text-neutral-700 fill-neutral-400" />
+                            </div>
+                        }
+                        {
+                            !testLoading && topicTests.length == 0 &&
+                            <div className="flex col-span-3 justify-center items-center text-sm text-neutral-400 mt-[25%]">
+                                Nothing has been posted yet!
+                            </div>
+                        }
+                        {
+                            !testLoading && topicTests.map((test, index) => {
+                                return <QuizCard key={index} test={test}/>
+                            })
+                        }
                     </div>
                 </div>
             </div>
@@ -100,14 +132,14 @@ function TopicView() {
 }
 
 
-function QuizCard() {
+function QuizCard({ test }) {
     return (
-        <div className="flex">
+        <div className="flex h-max">
             <div className="w-full border-[1px] border-neutral-900 bg-neutral-950 rounded-md p-6">
                 <div className="flex justify-between items-start">
                     <div>
-                        <div className="text-xl font-semibold">Quiz Name</div>
-                        <div className="text-sm text-neutral-300">Quiz Description</div>
+                        <div className="text-xl font-semibold">{test.title}</div>
+                        <div className="text-sm text-neutral-300">{test.description}</div>
                     </div>
                     <div className="flex gap-x-2 items-center">
                         <div className="rounded-full bg-rose-900 size-[10px]"></div>

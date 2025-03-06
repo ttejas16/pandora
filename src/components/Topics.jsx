@@ -149,7 +149,7 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
   const [formData, setFormData] = useState({ title: null, subTitle: null, url: "temporary" });
   const [resultCode, setResultCode] = useState(null);
   const [topicCode, setTopicCode] = useState(null);
-  console.log(topicCode);
+  // console.log(topicCode);
   
   async function handleSubmit(e) {
     e.preventDefault();

@@ -85,10 +85,53 @@ async function getTopicUsers(topicId) {
     }
 }
 
+async function createTest(topicId, title, description, questions) {
+    try {
+        const raw = await fetch(serverUrl + "/user/createTest", {
+            ...postReqInit,
+            body: JSON.stringify({ topicId, title, description, questions })
+        });
+
+        const res = await raw.json();
+
+        if (!res.success) {
+            return { data: null, error: res.msg };
+        }
+
+        return { data: res.data, error: null };
+
+
+    } catch (error) {
+        console.log(error);
+        return { data: null, error };
+    }
+
+}
+
+async function getTests(topicId) {
+    try {
+        const raw = await fetch(serverUrl + "/user/getTests?" + new URLSearchParams({ topicId }), {
+            ...getReqInit
+        });
+
+        const res = await raw.json();
+
+        if (!res.success) {
+            return { data: null, error: res.msg };
+        }
+
+        return { data: res.data, error: null };
+    } catch (error) {
+        console.log(error);
+        return { data: null, error };
+    }
+}
 
 export {
     createTopic,
     getTopics,
     getTopicUsers,
-    joinTopic
+    joinTopic,
+    createTest,
+    getTests
 }

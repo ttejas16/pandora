@@ -2,6 +2,9 @@ import { CalendarDays, Check, CheckCheck, ListPlus, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { div } from "motion/react-client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createTest } from "../api/user";
+import { useLocation, useNavigate } from "react-router-dom";
+import SpinnerSmall from "./SpinnerSmall";
 
 const emptyQuestion = { question: null, options: [null, null, null, null], correctOption: null };
 
@@ -11,6 +14,10 @@ const initialQuestions = [
 ]
 
 function AddQuiz() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [loading, setLoading] = useState(false);
+    const [testData, setTestData] = useState({ title: null, description: null });
     const [questions, setQuestions] = useState(initialQuestions);
 
     const updateQuestion = useCallback((questionIndex, newQuestion) => {
@@ -66,9 +73,20 @@ function AddQuiz() {
         setQuestions(questions.filter((_, index) => questionIndex != index));
     }, [questions]);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        console.log(questions);
+        setLoading(true);
+
+        const { error } = await createTest(location.state.topicId, testData.title, testData.description, questions);
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        setTimeout(() => {
+            setLoading(false);
+            navigate(`/topics/${location.state.topicId}`, { replace: true, state: location.state });
+        }, 1000);
 
     }
 
@@ -86,14 +104,16 @@ function AddQuiz() {
                         outline-none bg-inherit border-b-[1px] border-primary/60"
                                 type="text"
                                 placeholder="Quiz Title..."
+                                onChange={e => setTestData({ ...testData, title: e.currentTarget.value })}
                             />
                             <input
                                 required
                                 className="py-2 px-3
-                        placeholder:text-neutral-400 mt-4
-                        outline-none bg-inherit bg-inherit border-b-[1px] border-primary/60"
+                                placeholder:text-neutral-400 mt-4
+                                outline-none bg-inherit bg-inherit border-b-[1px] border-primary/60"
                                 type="text"
                                 placeholder="Quiz Description..."
+                                onChange={e => setTestData({ ...testData, description: e.currentTarget.value })}
                             />
                         </div>
                         <div className="flex gap-x-4 items-end justify-center">
@@ -103,9 +123,12 @@ function AddQuiz() {
                             <button type="button" className="text-sky-600">
                                 <CalendarDays />
                             </button>
-                            <button type="submit" className="text-lime-300">
-                                <Check />
-                            </button>
+                            {
+                                loading ? <SpinnerSmall className="text-neutral-700 fill-neutral-400" /> :
+                                    <button type="submit" className="text-lime-300">
+                                        <Check />
+                                    </button>
+                            }
                         </div>
                     </div>
 
