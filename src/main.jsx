@@ -11,6 +11,8 @@ import TopicView from './components/TopicView.jsx'
 import AddQuiz from './components/AddQuiz.jsx'
 import PrivateWrapper from './components/PrivateWrapper.jsx'
 import AuthProvider from './hooks/AuthProvider.jsx'
+import TakeQuiz from './components/TakeQuiz.jsx'
+import Analytics from './components/Analytics.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,8 @@ const router = createBrowserRouter([
           { index: true, element: <Topics /> },
           { path: ":id", element: <TopicView /> },
           { path: ":id/add", element: <AddQuiz /> },
+          { path: ":id/t/:testId", element: <TakeQuiz /> },
+          { path: ":id/analytics", element: <Analytics /> },
         ]
       },
     ]

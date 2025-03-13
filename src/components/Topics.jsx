@@ -7,11 +7,13 @@ import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/authContext";
 import { createTopic, getTopics, joinTopic } from "../api/user";
 import SpinnerSmall from "./SpinnerSmall";
+import ProfileMenu from "./ProfileMenu";
 
 function Topics() {
   const [topics, setTopics] = useState([]);
   const [filter, setFilter] = useState({ created: true, joined: true })
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showProfileContext, setShowProfileContext] = useState(false);
   const authContext = useAuthContext();
 
 
@@ -58,8 +60,14 @@ function Topics() {
             <button className="border-[1px] border-neutral-800 flex justify-center items-center w-12 h-12 rounded-full">
               <Search size={18} />
             </button>
-            <button className="border-[1px] border-neutral-800 flex justify-center items-center w-12 h-12 rounded-full">
-              <span className="font-semibold">W</span>
+            <button
+              onClick={(e) => setShowProfileContext(!showProfileContext)}
+              title={authContext.user.username}
+              className="border-[1px] border-neutral-800 flex justify-center items-center w-12 h-12 rounded-full relative">
+              <span className="font-semibold">
+                {authContext.user.username.split(" ").filter(w => w).map(w => w[0].toUpperCase()).join("")}
+              </span>
+              {showProfileContext && <ProfileMenu />}
             </button>
           </div>
         </div>
@@ -129,10 +137,10 @@ function TopicCard({ topic }) {
         </Link>
         {
           <div className="flex items-center gap-x-2">
-            { 
-              topic.isPublic ? 
-              <div className="rounded-full bg-sky-400 size-[10px]"></div>:
-              <div className="rounded-full bg-yellow-400 size-[10px]"></div>
+            {
+              topic.isPublic ?
+                <div className="rounded-full bg-sky-400 size-[10px]"></div> :
+                <div className="rounded-full bg-yellow-400 size-[10px]"></div>
             }
             <span className="pr-2">{topic.isPublic ? "Public" : "Private"}</span>
           </div>
@@ -150,7 +158,7 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
   const [resultCode, setResultCode] = useState(null);
   const [topicCode, setTopicCode] = useState(null);
   // console.log(topicCode);
-  
+
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -176,7 +184,7 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
     setLoading(true);
     setResultCode(null);
 
-    const { data,error } = await joinTopic({ topicCode });
+    const { data, error } = await joinTopic({ topicCode });
     if (error) {
       console.log(error);
       return;
@@ -300,18 +308,18 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
                           <span>
                             Topic Code
                           </span>
-                          <span 
+                          <span
                             onClick={e => {
                               navigator.clipboard.writeText(e.currentTarget.textContent)
                               e.currentTarget.classList.add("text-lime-500");
 
-                              setTimeout(() => { 
+                              setTimeout(() => {
 
                                 e.target.classList.remove("text-lime-500");
                                 console.log(e.target.classList);
-                                 
-                              },1000)
-                            }} 
+
+                              }, 1000)
+                            }}
                             className="mx-2 py-1 px-3 bg-neutral-700 rounded-md flex gap-x-2 cursor-pointer">
                             {resultCode}
                             <Clipboard size={18} />
@@ -340,7 +348,7 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
                         name="topicCode"
                         placeholder="Enter code here" />
                       <button disabled={loading} type="submit" className="bg-primary/60 disabled:bg-primary/30 px-14 py-3 w-full rounded-md text-sm flex justify-center">
-                        { loading  ? <SpinnerSmall className="text-neutral-500 fill-neutral-200"/> : "Join Topic" }
+                        {loading ? <SpinnerSmall className="text-neutral-500 fill-neutral-200" /> : "Join Topic"}
                       </button>
                     </form>
                   </div>

@@ -1,4 +1,4 @@
-import { BookMarked, Image, NotebookPen, Pencil, Plus, SwatchBook, Trash2, Users } from "lucide-react";
+import { BookMarked, ChartBar, ChartColumn, ChartColumnBig, ChartLine, ChartNoAxesCombined, Copy, Image, NotebookPen, Pencil, Plus, SwatchBook, Trash2, Users } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -33,7 +33,7 @@ function TopicView() {
         setTopicTests(data.tests);
         setTimeout(() => {
             setTestLoading(false);
-        },1000);
+        }, 1000);
     }
 
     useEffect(() => {
@@ -57,7 +57,7 @@ function TopicView() {
                                 return (
                                     <div key={user.userId} className="flex gap-x-2 justify-start items-center text-sm border-b-[1px] border-neutral-900 w-full py-3 px-6">
                                         <div className="h-10 w-10 text-xs rounded-full bg-neutral-800 grid place-content-center">
-                                            {user.username.split(" ").filter(w => w).map(w => w[0]).join("")}
+                                            {user.username.split(" ").filter(w => w).map(w => w[0].toUpperCase()).join("")}
                                         </div>
                                         <div className="text-sm">{user.username}</div>
                                     </div>
@@ -90,7 +90,24 @@ function TopicView() {
                             <div className="rounded-md flex justify-center items-center w-[40%] h-[150px] bg-primary/10">
                                 <img src={"https://img.freepik.com/free-photo/galaxy-nature-aesthetic-background-starry-sky-mountain-remixed-media_53876-126761.jpg?t=st=1740856833~exp=1740860433~hmac=75e46630dc1412eeb97a9e4f105eb7c66003c323e34fc04e99cf1ab48093660d&w=1060"} alt="img" className="w-full h-full object-cover rounded-md" />
                             </div>
-                            <div className="w-[60%] flex justify-end items-end px-6">
+                            <div className="w-[60%] flex justify-end items-end px-6 gap-x-4">
+                                <div
+                                    onClick={async (e) => {
+                                        const current = e.currentTarget;
+                                        current.classList.add("border-sky-600");
+                                        await navigator.clipboard.writeText(current.textContent);
+                                        setTimeout(() => {
+                                            current.classList.remove("border-sky-600");
+                                        }, 1000);
+                                    }}
+                                    title="Copy Topic Code"
+                                    className="text-sm text-neutral-400 flex gap-x-2 items-center 
+                                    cursor-pointer border-[1px] rounded-md border-neutral-800 px-3 py-2">
+                                    <Copy size={15} className="text-sky-600" />
+                                    <span>
+                                        {topic.topicCode}
+                                    </span>
+                                </div>
                                 {
                                     topic.isOwner &&
                                     <Link
@@ -121,7 +138,7 @@ function TopicView() {
                         }
                         {
                             !testLoading && topicTests.map((test, index) => {
-                                return <QuizCard key={index} test={test}/>
+                                return <QuizCard key={index} test={test} topicId={topic.topicId} />
                             })
                         }
                     </div>
@@ -132,7 +149,7 @@ function TopicView() {
 }
 
 
-function QuizCard({ test }) {
+function QuizCard({ test, topicId }) {
     return (
         <div className="flex h-max">
             <div className="w-full border-[1px] border-neutral-900 bg-neutral-950 rounded-md p-6">
@@ -143,20 +160,29 @@ function QuizCard({ test }) {
                     </div>
                     <div className="flex gap-x-2 items-center">
                         <div className="rounded-full bg-rose-900 size-[10px]"></div>
-                        <span className="text-neutral-300 text-sm">10 Questions</span>
+                        <span className="text-neutral-300 text-sm">
+                            {
+                                test._count.questions > 1 ?
+                                    `${test._count.questions} Questions` : `${test._count.questions} Question`
+                            }
+                        </span>
                     </div>
                 </div>
                 <div className="mt-3 text-xs text-neutral-400">
                     Ends At 12-12-2024
                 </div>
                 <div className="flex justify-between items-end">
-                    <button className="px-6 py-2 mt-8 bg-primary/60 rounded-md text-sm">
+                    <Link to={`/topics/${topicId}/t/${test.testId}`} state={test} className="px-6 py-2 bg-primary/60 rounded-md text-sm">
                         Take Quiz
-                    </button>
-                    <button className="rounded-md flex gap-x-1 text-xs justify-center items-center">
-                        <Trash2 size={18} strokeWidth={2} />
-                        {/* Delete Quiz */}
-                    </button>
+                    </Link>
+                    <div className="mt-8 gap-x-4 flex">
+                        <Link to={`/topics/${topicId}/analytics`} state={test}>
+                            <ChartColumn className="text-teal-500" size={18} strokeWidth={2}/>
+                        </Link>
+                        <button className="rounded-md flex gap-x-1 text-xs justify-center items-center">
+                            <Trash2 size={18} strokeWidth={2} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

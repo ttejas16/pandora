@@ -47,6 +47,22 @@ async function login({ email, password }) {
     }
 }
 
+async function logout() {
+
+    try {
+        const raw = await fetch(serverUrl + "/auth/logout", { ...getReqInit });
+        const res = await raw.json();
+        if (!res.success) {
+            return { data: null, error: res.msg };
+        }
+
+        return { data: res.user, error: null };
+
+    } catch (err) {
+        return { data: null, error: err };
+    }
+}
+
 async function getUser() {
     try {
         const raw = await fetch(serverUrl + "/auth/getUser", { ...getReqInit });
@@ -57,7 +73,7 @@ async function getUser() {
             return { data: null, error: res.msg };
         }
 
-        
+
         return { data: res.user, error: null };
     } catch (err) {
         return { data: null, error: err };
@@ -85,5 +101,6 @@ export {
     signUp,
     getUser,
     checkEmailValidity,
-    checkUserNameValidity
+    checkUserNameValidity,
+    logout
 }
