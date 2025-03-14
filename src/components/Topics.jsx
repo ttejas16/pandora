@@ -15,7 +15,7 @@ function Topics() {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showProfileContext, setShowProfileContext] = useState(false);
   const authContext = useAuthContext();
-
+  
 
   function appendTopic(topic = {}) {
     setTopics(p => [...p, topic]);
@@ -97,7 +97,22 @@ function Topics() {
         {/* Grid */}
         <div className="w-full grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-8 px-12 overflow-y-auto">
           {
-            topics.map((topic) => {
+            topics.filter(t => {
+              if (filter.created && filter.joined) {
+                return true;
+              }
+
+              if (filter.created) {
+                return t.isOwner;
+              }
+
+              if (filter.joined) {
+                return !t.isOwner;
+              }
+
+              return false;
+
+            }).map((topic) => {
               return <TopicCard key={topic.topicId} topic={topic} />
             })
           }
