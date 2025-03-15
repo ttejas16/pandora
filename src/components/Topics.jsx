@@ -8,6 +8,7 @@ import { useAuthContext } from "../hooks/authContext";
 import { createTopic, getTopics, joinTopic } from "../api/user";
 import SpinnerSmall from "./SpinnerSmall";
 import ProfileMenu from "./ProfileMenu";
+import { useToast } from "../hooks/ToastProvider";
 
 function Topics() {
   const [topics, setTopics] = useState([]);
@@ -15,7 +16,7 @@ function Topics() {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showProfileContext, setShowProfileContext] = useState(false);
   const authContext = useAuthContext();
-  
+
 
   function appendTopic(topic = {}) {
     setTopics(p => [...p, topic]);
@@ -129,6 +130,7 @@ function Topics() {
 
 
 function TopicCard({ topic }) {
+  const { showToast } = useToast();
 
   return (
     <div className="rounded-md bg-neutral-950 p-4">
@@ -173,6 +175,7 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
   const [resultCode, setResultCode] = useState(null);
   const [topicCode, setTopicCode] = useState(null);
   // console.log(topicCode);
+  const { showToast } = useToast();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -202,6 +205,11 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
     const { data, error } = await joinTopic({ topicCode });
     if (error) {
       console.log(error);
+
+      setTimeout(() => {
+        setLoading(false);
+        showToast({ title:error, type:"secondary" })
+      }, 1500);
       return;
     }
 

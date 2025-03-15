@@ -13,6 +13,7 @@ import PrivateWrapper from './components/PrivateWrapper.jsx'
 import AuthProvider from './hooks/AuthProvider.jsx'
 import TakeQuiz from './components/TakeQuiz.jsx'
 import Analytics from './components/Analytics.jsx'
+import { ToastProvider } from './hooks/ToastProvider.jsx'
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <ToastProvider>
+        <RouterProvider router={router} />
+      </ToastProvider>
     </AuthProvider>
   </StrictMode>,
 )

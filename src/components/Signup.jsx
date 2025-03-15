@@ -8,6 +8,7 @@ import { checkEmailValidity, signUp } from "../api/auth";
 import Error from "./ErrorMessage";
 import ErrorMessage from "./ErrorMessage";
 import SpinnerSmall from "./SpinnerSmall";
+import { useToast } from "../hooks/ToastProvider";
 
 const initialformData = {
   email: "",
@@ -17,11 +18,11 @@ const initialformData = {
 }
 
 function Signup() {
-  const [toastMessage, setToastMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(initialformData);
   const [showPassword, setShowPassword] = useState({ password: false, confirmPassword: false });
   const [errors, setErrors] = useState(null);
+  const { showToast } = useToast()
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -41,10 +42,7 @@ function Signup() {
     setTimeout(() => {
       // show toast here
       setLoading(false);
-      setToastMessage("Registered Successfully!");
-      setTimeout(() => {
-        setToastMessage(null);
-      }, 1500);
+      showToast({ title:"Registered Successfully!", type:"primary" });
     }, 1000);
   }
 
@@ -184,31 +182,10 @@ function Signup() {
             <Link to={"/login"} className="mx-1 underline">Login</Link>
           </div>
         </div>
-        <Toast show={toastMessage} title={toastMessage} />
       </section>
     </>
   )
 }
 
-
-function Toast({ show, title }) {
-  return (
-    <AnimatePresence>
-      {
-        show &&
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          exit={{ opacity:0 }} 
-          className="absolute bottom-0 w-full mb-6 flex justify-center">
-          <div className="bg-neutral-950 border-[1px] border-neutral-900 rounded-md px-6 py-2 text-xs flex justify-start items-center gap-x-2">
-            <CircleCheckBig size={18} className="text-lime-400"/>
-            <span>{title}</span>
-          </div>
-        </motion.div>
-      }
-    </AnimatePresence>
-  )
-}
 
 export default Signup;
