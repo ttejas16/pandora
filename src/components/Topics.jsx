@@ -59,6 +59,12 @@ function Topics() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!searchActive) {
+      setSearchQuery("");
+    }
+
+  }, [searchActive, searchQuery]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -175,6 +181,15 @@ function Topics() {
             }).map((topic) => {
               return <TopicCard key={topic.topicId} topic={topic} />
             })
+          }
+          {
+            !searchQuery.trim() && topics.length == 0 &&
+            <div className="col-span-full row-span-full flex justify-center items-center mt-[15%] gap-x-4 text-neutral-300">
+              <Squirrel size={60} strokeWidth={1}/>
+              <span>
+                Nothing at the moment...
+              </span>
+            </div>
           }
           {
             searchQuery.trim() && searchLoading &&
@@ -461,29 +476,29 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
   )
 }
 
-function SearchTopicCard({ topic }){
+function SearchTopicCard({ topic }) {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
 
   async function handleClick(e) {
     setLoading(true);
 
-    const { data,error } = await joinTopic({ topicCode: topic.topicCode });
+    const { data, error } = await joinTopic({ topicCode: topic.topicCode });
     if (error) {
       console.log(error);
       setTimeout(() => {
-        showToast({ title:error, type:"secondary" });
+        showToast({ title: error, type: "secondary" });
         setLoading(false);
-      },1000);
+      }, 1000);
       return;
     }
 
     setTimeout(() => {
-      showToast({ title:"Topic Joined!", type:"primary" });
+      showToast({ title: "Topic Joined!", type: "primary" });
       setLoading(false);
-    },1000);    
+    }, 1000);
   }
-  
+
   return (
     <div className="rounded-md bg-neutral-950 p-4">
       <div className="rounded-t-md w-full flex flex-col bg-neutral-950 gap-y-1 pl-2 pt-2">
@@ -504,7 +519,7 @@ function SearchTopicCard({ topic }){
           disabled={loading}
           onClick={handleClick}
           className="border-[1px] border-neutral-800 px-6 py-2 text-center rounded-md text-sm">
-            { loading ? <SpinnerSmall className="text-neutral-600 fill-sky-400"/> :"Join Topic" }
+          {loading ? <SpinnerSmall className="text-neutral-600 fill-sky-400" /> : "Join Topic"}
         </button>
         {
           <div className="flex items-center gap-x-2">

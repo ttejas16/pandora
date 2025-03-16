@@ -2,7 +2,7 @@ import { BookMarked, ChartBar, ChartColumn, ChartColumnBig, ChartLine, ChartNoAx
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { getTests, getTopicUsers } from "../api/user";
+import { deleteTest, getTests, getTopicUsers } from "../api/user";
 import SpinnerSmall from "./SpinnerSmall";
 
 function TopicView() {
@@ -31,6 +31,20 @@ function TopicView() {
         }
 
         setTopicTests(data.tests);
+        setTimeout(() => {
+            setTestLoading(false);
+        }, 1000);
+    }
+
+    async function handleDelete(testId) {
+        setTestLoading(true);
+        const { data, error } = await deleteTest(testId);
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        setTopicTests(p => p.filter(t => t.testId != data.deletedTestId));
         setTimeout(() => {
             setTestLoading(false);
         }, 1000);
@@ -138,7 +152,13 @@ function TopicView() {
                         }
                         {
                             !testLoading && topicTests.map((test, index) => {
-                                return <QuizCard key={index} test={test} topicId={topic.topicId} />
+                                return <QuizCard
+                                    key={index}
+                                    test={test}
+                                    topicId={topic.topicId}
+                                    handleDelete={handleDelete}
+                                    isOwner={topic.isOwner}
+                                />
                             })
                         }
                     </div>
@@ -149,7 +169,7 @@ function TopicView() {
 }
 
 
-function QuizCard({ test, topicId }) {
+function QuizCard({ test, topicId, handleDelete, isOwner }) {
     return (
         <div className="flex h-max">
             <div className="w-full border-[1px] border-neutral-900 bg-neutral-950 rounded-md p-6">
@@ -171,18 +191,21 @@ function QuizCard({ test, topicId }) {
                 <div className="mt-3 text-xs text-neutral-400">
                     Ends At 12-12-2024
                 </div>
-                <div className="flex justify-between items-end">
-                    <Link to={`/topics/${topicId}/t/${test.testId}`} state={test} className="px-6 py-2 bg-primary/60 rounded-md text-sm">
-                        Take Quiz
-                    </Link>
-                    <div className="mt-8 gap-x-4 flex">
-                        <Link to={`/topics/${topicId}/analytics`} state={test}>
-                            <ChartColumn className="text-teal-500" size={18} strokeWidth={2}/>
-                        </Link>
-                        <button className="rounded-md flex gap-x-1 text-xs justify-center items-center">
-                            <Trash2 size={18} strokeWidth={2} />
-                        </button>
-                    </div>
+                <div className="flex items-end">
+                    {
+                        !isOwner ?
+                            <Link to={`/topics/${topicId}/t/${test.testId}`} state={test} className="px-6 py-2 bg-primary/60 rounded-md text-sm mt-8">
+                                Take Quiz
+                            </Link> :
+                            <div className="mt-8 ml-auto gap-x-4 flex">
+                                <Link to={`/topics/${topicId}/analytics`} state={test}>
+                                    <ChartColumn className="text-teal-500" size={18} strokeWidth={2} />
+                                </Link>
+                                <button onClick={e => handleDelete(test.testId)} className="rounded-md flex gap-x-1 text-xs justify-center items-center">
+                                    <Trash2 size={18} strokeWidth={2} />
+                                </button>
+                            </div>
+                    }
                 </div>
             </div>
         </div>

@@ -12,6 +12,12 @@ const postReqInit = {
     headers: { "Content-Type": "application/json" },
 }
 
+const deleteReqInit = {
+    credentials: "include",
+    method: 'DELETE',
+    headers: { "Content-Type": "application/json" },
+}
+
 async function createTopic(data = {}) {
     try {
         const raw = await fetch(serverUrl + "/user/createTopic", { ...postReqInit, body: JSON.stringify(data) });
@@ -206,6 +212,25 @@ async function searchTopics(topicName) {
     }
 }
 
+async function deleteTest(testId) {
+    try {
+        const raw = await fetch(serverUrl + "/user/deleteTest?" + new URLSearchParams({ testId }), { ...deleteReqInit });
+
+        const res = await raw.json();
+        // console.log(res);
+
+        if (!res.success) {
+            return { data: null, error: res.msg };
+        }
+        // console.log(res.data);
+
+        return { data: res.data, error: null };
+    } catch (error) {
+        console.log(error);
+        return { data: null, error };
+    }
+}
+
 export {
     createTopic,
     getTopics,
@@ -216,5 +241,6 @@ export {
     getTestQuestions,
     submitTest,
     getAnalytics,
-    searchTopics
+    searchTopics,
+    deleteTest
 }
