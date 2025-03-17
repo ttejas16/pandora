@@ -38,12 +38,12 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
     }
   }, []);
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    ref.current.rotation.y += 0.001;
-    ref.current.position.x = Math.cos(t * rotationSpeed) * distanceFromSun;
-    ref.current.position.z = Math.sin(t * rotationSpeed) * distanceFromSun;
-  })
+  // useFrame(({ clock }) => {
+  //   const t = clock.getElapsedTime();
+  //   ref.current.rotation.y += 0.001;
+  //   ref.current.position.x = Math.cos(t * rotationSpeed) * distanceFromSun;
+  //   ref.current.position.z = Math.sin(t * rotationSpeed) * distanceFromSun;
+  // })
 
   return (
     <>
