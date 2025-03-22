@@ -242,5 +242,7 @@ export {
     submitTest,
     getAnalytics,
     searchTopics,
-    deleteTest
+    deleteTest,
+    getReqInit,
+    serverUrl
 }

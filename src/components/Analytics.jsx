@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Activity, Hash, Users } from "lucide-react";
 import MarkDistributionChart from "./MarkDistributionChart";
 import { getInitials } from "../utils/getInitials";
+import { getQuestionAnalytics } from "../api/test";
+import QuestionAnalytics from "./QuestionAnalytics";
 
 const initialMetaData = {
     totalSubmissions: 0,
@@ -15,9 +17,12 @@ function Analytics() {
     const [markDistribution, setMarkDistribution] = useState([]); // [{ x:0, y:0 }, ...]
     const [userRankings, setUserRankings] = useState([]); // [{ userName:"", email:"", score:0 }, ...]
     const [metaData, setMetaData] = useState(initialMetaData);
+    const [questionAnalytics, setQuestionAnalytics] = useState([]);
     const location = useLocation();
 
     async function fetchAnalytics() {
+        
+        
         const { data, error } = await getAnalytics(location.state.testId);
         if (error) {
             console.log(error);
@@ -35,16 +40,27 @@ function Analytics() {
         });
         setUserRankings(Object.values(data.userScoreMap))
     }
-
-    console.log(userRankings);
     
+    async function fetchQuestionAnalytics() {
+        const { data,error } = await getQuestionAnalytics(location.state.testId);
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        setQuestionAnalytics(data.questionData);
+    }
+
+    // console.log(userRankings);
+
     useEffect(() => {
         fetchAnalytics();
+        fetchQuestionAnalytics();
     }, []);
 
     return (
-        <div className="px-20 py-16 w-full h-screen flex justify-center items-center">
-            <div className="w-full h-full flex flex-col items-start border-[1px] border-neutral-900 rounded-md">
+        <div className="px-20 py-16 w-full flex justify-center items-center">
+            <div className="w-full flex flex-col items-start border-[1px] border-neutral-900 rounded-md">
                 <div className="space-y-3 px-10 py-8">
                     <p className="text-4xl">{location.state.title}</p>
                     <p className="text-xl text-neutral-400">{location.state.description}</p>
@@ -78,7 +94,7 @@ function Analytics() {
                         </span>
                     </div>
                 </div>
-                <div className="flex h-full w-full px-8 py-8 gap-x-8 overflow-y-auto">
+                <div className="flex h-[650px] w-full px-8 py-8 gap-x-8 overflow-y-auto">
                     <div className="w-[70%] bg-neutral-950 border-[1px] border-neutral-900 rounded-md h-full p-6 flex items-end">
                         <MarkDistributionChart
                             xLabel={`Marks out of ${metaData.maxMarks}`}
@@ -96,13 +112,29 @@ function Analytics() {
                                 userRankings.map((user, i) => <UserCard key={i} user={user} />)
                             }
                             {
-                                userRankings.length == 0 && 
-                                    <div className="text-sm text-neutral-300 self-center mt-[50%]">
-                                        Nothing at the moment...
-                                    </div>
+                                userRankings.length == 0 &&
+                                <div className="text-sm text-neutral-300 self-center mt-[50%]">
+                                    Nothing at the moment...
+                                </div>
                             }
                         </div>
                     </div>
+                </div>
+                <div className="w-full p-8 grid grid-cols-2 gap-6">
+                    <div className="col-span-full text-xl flex gap-x-2 items-center justify-start">
+                        <div className="w-4 h-4 bg-amber-500 rounded-full"></div>
+                        <span>
+                            Question Wise Analysis
+                        </span>
+                    </div>
+                    {
+                        questionAnalytics.map((question) => {
+                            return <QuestionAnalytics 
+                                        key={question.qId}
+                                        questionWithOptionAnalytics={question}
+                                    />
+                        })
+                    }
                 </div>
             </div>
         </div>

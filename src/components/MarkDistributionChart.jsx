@@ -5,24 +5,24 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const dummyData = [
     { x: 0, y: 1 },
-    // { x: 1, y: 5 },
-    // { x: 2, y: 8 },
-    // { x: 3, y: 12 },
-    // { x: 4, y: 15 },
-    // { x: 5, y: 20 },
-    // { x: 6, y: 18 },
-    // { x: 7, y: 10 },
-    // { x: 8, y: 10 },
-    // { x: 9, y: 10 },
-    // { x: 10, y: 10 },
+    { x: 1, y: 5 },
+    { x: 2, y: 8 },
+    { x: 3, y: 12 },
+    { x: 4, y: 15 },
+    { x: 5, y: 20 },
+    { x: 6, y: 18 },
+    { x: 7, y: 10 },
+    { x: 8, y: 10 },
+    { x: 9, y: 10 },
+    { x: 10, y: 10 },
 ];
 
 const defaultDataset = {
     label: "",
     data: [],
-    // borderWidth: 0,
-    backgroundColor: '#0891b2',
-    // borderColor: '#0891b2',
+    borderWidth: 2,
+    backgroundColor: '#d946ef77',
+    borderColor: '#c026d3',
     maxBarThickness: 100,
     minBarThickness: 10,
     borderRadius: 3
