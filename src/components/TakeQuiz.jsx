@@ -3,6 +3,7 @@ import { getTestQuestions, submitTest } from "../api/user";
 import { useLocation, useNavigate } from "react-router-dom";
 import SpinnerSmall from "./SpinnerSmall";
 import { motion } from "motion/react";
+import { useToast } from "../hooks/ToastProvider";
 
 function TakeQuiz() {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ function TakeQuiz() {
     const [loading, setLoading] = useState(true);
     const [answers, setAnswers] = useState({});
     const [submitLoading, setSubmitLoading] = useState(false);
+    const { showToast } = useToast();
 
     async function fetchQuestions() {
         const { data, error } = await getTestQuestions(location.state.testId);
@@ -37,6 +39,7 @@ function TakeQuiz() {
         const { data, error } = await submitTest(location.state.testId, answers);
         if (error) {
             console.log(error);
+            showToast({ title: error, type: "secondary" })
             return;
         }
 
@@ -70,7 +73,9 @@ function TakeQuiz() {
                                 }
                             </span>
                         </div>
-                        <span className="text-xs text-neutral-400">Ends At 12-12-2024</span>
+                        <span className="text-xs text-neutral-400">
+                            Ends At {location.state.endTime ? location.state.endTime.split("T")[0] : "NA"}
+                        </span>
                     </div>
                     <div className="flex gap-x-4 items-end">
                         {

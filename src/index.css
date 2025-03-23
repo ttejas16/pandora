@@ -141,22 +141,22 @@ a {
     }
 }
 
-
-
-
-
 ::-webkit-scrollbar {
     width: 4px;
 }
+
 ::-webkit-scrollbar-track {
     background: theme('colors.neutral.950');
 }
+
 ::-webkit-scrollbar-track:hover {
     background: theme('colors.neutral.950');
 }
+
 ::-webkit-scrollbar-thumb {
     background: theme('colors.neutral.500');
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: theme('colors.neutral.400');
 }

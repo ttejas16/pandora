@@ -91,11 +91,11 @@ async function getTopicUsers(topicId) {
     }
 }
 
-async function createTest(topicId, title, description, questions) {
+async function createTest(topicId, title, endDate, description, questions) {
     try {
         const raw = await fetch(serverUrl + "/user/createTest", {
             ...postReqInit,
-            body: JSON.stringify({ topicId, title, description, questions })
+            body: JSON.stringify({ topicId, title, endDate, description, questions })
         });
 
         const res = await raw.json();

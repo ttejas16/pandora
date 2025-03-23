@@ -189,14 +189,22 @@ function QuizCard({ test, topicId, handleDelete, isOwner }) {
                     </div>
                 </div>
                 <div className="mt-3 text-xs text-neutral-400">
-                    Ends At 12-12-2024
+                    Ends At {test.endTime ? test.endTime.split("T")[0] : "NA"}
                 </div>
                 <div className="flex items-end">
                     {
-                        !isOwner ?
-                            <Link to={`/topics/${topicId}/t/${test.testId}`} state={test} className="px-6 py-2 bg-primary/60 rounded-md text-sm mt-8">
-                                Take Quiz
-                            </Link> :
+                        !isOwner ? (
+                            test.Submissions.length == 0 ?
+                                <Link
+                                    to={`/topics/${topicId}/t/${test.testId}`}
+                                    state={test}
+                                    className="px-6 py-2 bg-primary/60 rounded-md text-sm mt-8">
+                                    Take Quiz
+                                </Link> :
+                                <span className="px-6 py-2 border-[1px] border-neutral-800 text-neutral-300 rounded-md text-sm mt-8">
+                                    Submitted!
+                                </span>
+                        ) :
                             <div className="mt-8 ml-auto gap-x-4 flex">
                                 <Link to={`/topics/${topicId}/analytics`} state={test}>
                                     <ChartColumn className="text-teal-500" size={18} strokeWidth={2} />

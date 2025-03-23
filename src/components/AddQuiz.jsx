@@ -5,6 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createTest } from "../api/user";
 import { useLocation, useNavigate } from "react-router-dom";
 import SpinnerSmall from "./SpinnerSmall";
+import DatePicker from "./DatePicker";
+import DatePickerButton from "./DatePicker";
+import { useToast } from "../hooks/ToastProvider";
 
 const emptyQuestion = { question: null, options: [null, null, null, null], correctOption: null };
 
@@ -14,10 +17,11 @@ const initialQuestions = [
 ]
 
 function AddQuiz() {
+    const { showToast } = useToast()
     const navigate = useNavigate();
     const location = useLocation();
     const [loading, setLoading] = useState(false);
-    const [testData, setTestData] = useState({ title: null, description: null });
+    const [testData, setTestData] = useState({ title: null, description: null, date: null });
     const [questions, setQuestions] = useState(initialQuestions);
 
     const updateQuestion = useCallback((questionIndex, newQuestion) => {
@@ -75,9 +79,13 @@ function AddQuiz() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        setLoading(true);
+        if (questions.length == 0) {
+            showToast({ title: "Please enter atleast one question!", type: "secondary" });
+            return;
+        }
 
-        const { error } = await createTest(location.state.topicId, testData.title, testData.description, questions);
+        setLoading(true);
+        const { error } = await createTest(location.state.topicId, testData.title, testData.date, testData.description, questions);
         if (error) {
             console.log(error);
             return;
@@ -120,9 +128,17 @@ function AddQuiz() {
                             <button onClick={(e) => addQuestion()} type="button" className="text-yellow-700">
                                 <ListPlus />
                             </button>
-                            <button type="button" className="text-sky-600">
+                            <DatePickerButton
+                                onDateChange={(date) => {    
+                                    setTestData(p => {
+                                        return { ...p, date: date == "" ? null : date }
+                                    })
+                                }}
+                                currentDate={testData.date}
+                            />
+                            {/* <button type="button" className="text-sky-600">
                                 <CalendarDays />
-                            </button>
+                            </button> */}
                             {
                                 loading ? <SpinnerSmall className="text-neutral-700 fill-neutral-400" /> :
                                     <button type="submit" className="text-lime-300">
@@ -155,32 +171,6 @@ function AddQuiz() {
         </form>
     )
 }
-
-function DatePicker() {
-    return (
-
-        <div id="date-range-picker" date-rangepicker class="flex items-center">
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                    </svg>
-                </div>
-                <input
-                    id="datepicker-range-start"
-                    name="start"
-                    type="text"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  
-                    dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                    dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Select date start" />
-            </div>
-        </div>
-
-    )
-}
-
 
 function Question({ question, options, correctOption, intId, updateQuestion, updateOption, setCorrectOption, deleteQuestion }) {
     // const [exit, setExit] = useState(false);
@@ -226,7 +216,9 @@ function Question({ question, options, correctOption, intId, updateQuestion, upd
                     options.map((option, optionIndex) => {
                         return (
 
-                            <div key={optionIndex} className="flex gap-x-2 items-center">
+                            <div key={optionIndex}
+                                className={`flex gap-x-2 items-center px-3 py-1 
+                                rounded-md border-lime-300 ${(correctOption && (correctOption == option)) ? "border-[1px]" : ""}`}>
                                 {/* <div className="border-[1px] border-primary rounded-full h-6 w-6 flex justify-center items-center"> */}
                                 {
                                     (correctOption && (correctOption == option)) ?
