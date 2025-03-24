@@ -14,6 +14,7 @@ import AuthProvider from './hooks/AuthProvider.jsx'
 import TakeQuiz from './components/TakeQuiz.jsx'
 import Analytics from './components/Analytics.jsx'
 import { ToastProvider } from './hooks/ToastProvider.jsx'
+import PlanetInfo from './components/PlanetInfo.jsx'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,9 @@ const router = createBrowserRouter([
           { path: ":id/analytics", element: <Analytics /> },
         ]
       },
+      {
+        path: "info/:planetName", element: <PlanetInfo/>
+      }
     ]
   },
 ])

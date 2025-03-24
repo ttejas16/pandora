@@ -2,7 +2,7 @@ import { ChevronDown, MoveDown } from "lucide-react";
 import Comets from "../assets/comets.png";
 import { motion } from "motion/react";
 
-function HeroSection() {
+function HeroSection({ scrollIntoView }) {
     return (
         <div className="w-full h-[100vh] flex flex-col justify-center items-center">
             <motion.img src={Comets} alt="comets image" className="w-full h-full absolute z-[1] object-cover"
@@ -31,11 +31,12 @@ function HeroSection() {
                 animate={{ y: 0, opacity: [0, 1], animationTimingFunction: 'ease-in-out' }}
                 transition={{ duration: 0.65, delay: 0.3 }}
                 className="z-[2]">
-                <a href="#foo"
+                <button
+                    onClick={scrollIntoView}
                     className="block animate-move-y text-primary bg-gray-300 p-4 rounded-full mt-6 
                     bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10 border-[1px] border-neutral-600">
                     <ChevronDown size={30} className="hover:scale-75 transition-all" />
-                </a>
+                </button>
             </motion.div>
         </div>
     )

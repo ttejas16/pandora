@@ -15,7 +15,7 @@ function Navbar() {
                 <div className="text-xl font-medium text-primary">Pandora</div>
                 <div className="flex gap-3">
                     <Link to={"/"} className="py-1 px-2 hover:text-primary transition-all">Home</Link>
-                    <button className="py-1 px-2 hover:text-primary transition-all">Learn</button>
+                    <Link to={"/info/earth"} className="py-1 px-2 hover:text-primary transition-all">Learn</Link>
                     <Link to={"/topics"} className="py-1 px-2 hover:text-primary transition-all">Topics</Link>
                     {
                         !authContext.user &&
