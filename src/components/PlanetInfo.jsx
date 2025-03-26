@@ -120,7 +120,7 @@ function PlanetInfo() {
                                     <div className=" flex flex-col gap-y-1">
                                         <span className="font-medium text-[#fff]">Gravity</span>
                                         <span className="text-sm">
-                                            9.81 m/s²
+                                            {info["gravity"]}
                                         </span>
                                     </div>
                                 </div>
