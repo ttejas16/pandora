@@ -48,7 +48,7 @@ function Login() {
   }
 
   useEffect(() => {
-    if (authContext.user) {
+    if (!loading && authContext.user) {
       navigate("/", { replace: true });
     }
 
