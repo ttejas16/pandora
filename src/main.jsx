@@ -15,11 +15,13 @@ import TakeQuiz from './components/TakeQuiz.jsx'
 import Analytics from './components/Analytics.jsx'
 import { ToastProvider } from './hooks/ToastProvider.jsx'
 import PlanetInfo from './components/PlanetInfo.jsx'
+import Error from './components/Error.jsx'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <Error/>,
     children: [
       { index: true, element: <App /> },
       { path: "login", element: <Login /> },
