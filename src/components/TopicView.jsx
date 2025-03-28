@@ -102,7 +102,7 @@ function TopicView() {
                         </div>
                         <div className="flex py-4 w-full">
                             <div className="rounded-md flex justify-center items-center w-[40%] h-[150px] bg-primary/10">
-                                <img src={"https://img.freepik.com/free-photo/galaxy-nature-aesthetic-background-starry-sky-mountain-remixed-media_53876-126761.jpg?t=st=1740856833~exp=1740860433~hmac=75e46630dc1412eeb97a9e4f105eb7c66003c323e34fc04e99cf1ab48093660d&w=1060"} alt="img" className="w-full h-full object-cover rounded-md" />
+                                <img src={topic.thumbnailUrl} alt="img" className="w-full h-full object-cover rounded-md" />
                             </div>
                             <div className="w-[60%] flex justify-end items-end px-6 gap-x-4">
                                 <div

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/authContext";
-import { createTopic, getTopics, joinTopic, searchTopics } from "../api/user";
+import { createTopic, getThumbnails, getTopics, joinTopic, searchTopics } from "../api/user";
 import SpinnerSmall from "./SpinnerSmall";
 import ProfileMenu from "./ProfileMenu";
 import { useToast } from "../hooks/ToastProvider";
@@ -185,7 +185,7 @@ function Topics() {
           {
             !searchQuery.trim() && topics.length == 0 &&
             <div className="col-span-full row-span-full flex justify-center items-center mt-[15%] gap-x-4 text-neutral-300">
-              <Squirrel size={60} strokeWidth={1}/>
+              <Squirrel size={60} strokeWidth={1} />
               <span>
                 Nothing at the moment...
               </span>
@@ -234,7 +234,7 @@ function TopicCard({ topic }) {
 
         <div className="rounded-md flex justify-center items-center w-full h-[150px] bg-primary/10 p-">
           {/* <Image className="text-neutral-600 " /> */}
-          <img src={"https://img.freepik.com/free-photo/galaxy-nature-aesthetic-background-starry-sky-mountain-remixed-media_53876-126761.jpg?t=st=1740856833~exp=1740860433~hmac=75e46630dc1412eeb97a9e4f105eb7c66003c323e34fc04e99cf1ab48093660d&w=1060"} alt="img" className="w-full h-full object-cover rounded-md" />
+          <img src={topic.thumbnailUrl} alt="img" className="w-full h-full object-cover rounded-md" />
         </div>
       </div>
 
@@ -262,18 +262,35 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
   const [loading, setLoading] = useState(false);
   const [activeButton, setActiveButton] = useState("New");
   const [topicType, setTopicType] = useState("public");
-  const [formData, setFormData] = useState({ title: null, subTitle: null, url: "temporary" });
+  const [formData, setFormData] = useState({ title: null, subTitle: null });
   const [resultCode, setResultCode] = useState(null);
   const [topicCode, setTopicCode] = useState(null);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
+  const [thumbnails, setThumbnails] = useState(null);
   // console.log(topicCode);
   const { showToast } = useToast();
+
+  useEffect(() => {
+    fetchThumbnails();
+  }, []);
+
+  async function fetchThumbnails() {
+    const { data, error } = await getThumbnails();
+    if (data) {
+      setThumbnails(data.thumbnailUrls);
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setResultCode(null);
 
-    const { data, error } = await createTopic({ ...formData, type: topicType });
+    const { data, error } = await createTopic({
+      ...formData,
+      thumbnailUrl: thumbnails[thumbnailIndex],
+      type: topicType
+    });
     if (error) {
       console.log(error);
       return;
@@ -389,8 +406,23 @@ function JoinTopicModal({ visible, setVisibility, appendTopic }) {
                         <label htmlFor="imageUrl" className="text-sm">Thumbnail</label>
                         <input type="text" className="hidden" name="imageUrl" />
                         <div className="relative rounded-md flex justify-center items-center w-full h-[150px] bg-primary/10 mt-1">
-                          <Image className="text-neutral-600 " />
-                          <button type="button" className="hover:rotate-90 duration-200 absolute -bottom-2 -right-2 rounded-full border-[1px] border-neutral-800 bg-neutral-900 p-2">
+                          {
+                            thumbnails ?
+                              <img
+                                src={thumbnails[thumbnailIndex]} alt="thumbnail_img"
+                                className="w-full h-full object-cover rounded-md" />
+                              :
+                              <Image className="text-neutral-600 " />
+                          }
+                          <button
+                            onClick={e => {
+                              if (thumbnails) {
+                                setThumbnailIndex((thumbnailIndex + 1) % thumbnails.length);
+                              }
+                            }}
+                            type="button"
+                            className="hover:rotate-90 duration-200 absolute -bottom-2 -right-2 
+                            rounded-full border-[1px] border-neutral-800 bg-neutral-900 p-2">
                             <RefreshCw size={18} />
                           </button>
                         </div>

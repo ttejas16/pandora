@@ -231,7 +231,27 @@ async function deleteTest(testId) {
     }
 }
 
+async function getThumbnails() {
+    try {
+        const raw = await fetch(serverUrl + "/user/getThumbnails", { ...getReqInit });
+
+        const res = await raw.json();
+        // console.log(res);
+
+        if (!res.success) {
+            return { data: null, error: res.msg };
+        }
+        // console.log(res.data);
+
+        return { data: res.data, error: null };
+    } catch (error) {
+        console.log(error);
+        return { data: null, error };
+    }
+}
+
 export {
+    getThumbnails,
     createTopic,
     getTopics,
     getTopicUsers,
