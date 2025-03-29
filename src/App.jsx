@@ -4,8 +4,8 @@ import { Canvas } from "@react-three/fiber"
 import { useProgress } from "@react-three/drei"
 import Scene from "./components/Scene"
 import { motion, useInView } from "motion/react"
-import ModelProvider from "./hooks/ModelProvider"
-import InfoModel from "./components/InfoModel"
+import ModalProvider from "./hooks/ModalProvider"
+import InfoModal from "./components/InfoModal"
 import Spinner from "./components/Spinner"
 import AuthProvider from "./hooks/AuthProvider"
 import { useAuthContext } from "./hooks/authContext"
@@ -20,7 +20,7 @@ function App() {
     return (
         <>
             {/* <AuthProvider> */}
-                <ModelProvider>
+                <ModalProvider>
                     <div className="w-full h-screen flex flex-col items-center justify-center">
                         {
                             ((progress < 100) || authContext.loading) ? <Spinner /> :
@@ -41,12 +41,12 @@ function App() {
                         transition={{ duration: 2 }}
                         viewport={{ once: true, amount: "all" }}
                         className="w-full h-screen relative">
-                        <InfoModel />
+                        <InfoModal />
                         <Canvas resize={{ scroll: false }}>
                             <Scene />
                         </Canvas>
                     </motion.div>
-                </ModelProvider>
+                </ModalProvider>
             {/* </AuthProvider> */}
         </>
     )

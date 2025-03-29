@@ -1,11 +1,13 @@
 import { BookOpen, BookOpenText, X } from "lucide-react";
-import { useModelContext } from "../hooks/modelContext"
+import { useModalContext } from "../hooks/modalContext"
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect } from "react";
+import infoMap from "../utils/planetDetails";
+import { Link } from "react-router-dom";
 
-function InfoModel() {
-    const modelContext = useModelContext();
-    // console.log(modelContext);
+function InfoModal() {
+    const modalContext = useModalContext();
+    // console.log(modalContext.activeModal);
     
     const [springs, api] = useSpring(() => ({
         from: {
@@ -18,23 +20,23 @@ function InfoModel() {
         },
     }))
     
-    if (!modelContext.activeModel) {
+    if (!modalContext.activeModal) {
         springs.opacity.reset();
         springs.x.reset();
         return null;
     }
-
+ 
     return (
         <animated.div className="absolute top-20 left-6 bg-neutral-900 p-8 rounded-sm w-[25vw] z-10 opacity-[0.98]">
             <div className="flex justify-between items-center">
                 {
-                    modelContext.isLoading ?
+                    modalContext.isLoading ?
                         <div className="animate-pulse w-full h-8 bg-neutral-700 rounded-sm">
 
                         </div> :
                         <>
                             <p className="text-2xl tracking-widest font-extralight">
-                                {modelContext.activeModel.toUpperCase()}
+                                {modalContext.activeModal.toUpperCase()}
                             </p>
                             <button onClick={(e) => {
 
@@ -50,8 +52,8 @@ function InfoModel() {
                                 //     onRest: () => {
                                 //     }
                                 // })
-                                modelContext.setActiveModel(null)
-                                modelContext.setIsLoading(true);
+                                modalContext.setActiveModal(null)
+                                modalContext.setIsLoading(true);
                             }} className="hover:text-primary">
                                 <X />
                             </button>
@@ -60,32 +62,29 @@ function InfoModel() {
             </div>
             <hr className="w-full my-4 border-neutral-700" />
             {
-                modelContext.isLoading ?
+                modalContext.isLoading ?
                     <div className="animate-pulse w-full h-[30vh] bg-neutral-700 rounded-sm">
 
                     </div> :
                     <>
                         <p className="font-light text-lg leading-snug">
-                            The center of our solar system. 4.5 billion-year-old yellow dwarf star,Without the Sun’s
-                            energy,life as we know it could not exist on our Earth.It is source of light for our entire solar system.Its gravity holds
-                            the solar system together, keeping everything present in our solar syestem,from the biggest planets to the
-                            smallest bits of debris in orbit around it. It is orbited by 8 planets, 5 dwarf planets,tens of
-                            thousands of asteroids and over three trillon commets and icy bodies.
-                            Sun is a medium-sized star with a radius of about 700,000 kilometers.
+                            {infoMap[modalContext.activeModal]["basic description"]}
                         </p>
                     </>
             }
             {
-                modelContext.isLoading ?
+                modalContext.isLoading ?
                     <div className="animate-pulse w-1/2 my-4 h-8 bg-neutral-700 rounded-sm"></div> :
                     <>
-                        <button
-                            className="py-3 px-6 hover:bg-[#9512c0] border-[#9512c0] border-[1px] mt-4 rounded-sm flex items-center gap-2 duration-300">
+                        <Link
+                            to={`/info/${modalContext.activeModal}`}
+                            className="py-3 px-6 hover:bg-[#9512c0] border-[#9512c0] border-[1px]
+                            w-max mt-4 rounded-sm flex items-center gap-2 duration-300">
                             <BookOpen strokeWidth={2} />
                             <span>
                                 READ MORE
                             </span>
-                        </button>
+                        </Link>
                     </>
             }
 
@@ -95,4 +94,4 @@ function InfoModel() {
     )
 }
 
-export default InfoModel;
+export default InfoModal;

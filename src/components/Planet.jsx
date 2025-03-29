@@ -3,7 +3,7 @@ import { AdditiveBlending, RingGeometry, SRGBColorSpace, Vector3 } from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { config, useSpring, easings } from "@react-spring/three";
-import { useModelContext } from "../hooks/modelContext";
+import { useModalContext } from "../hooks/modalContext";
 function lookAt(ref, controls) {
   if (!ref.current) {
     return;
@@ -12,10 +12,10 @@ function lookAt(ref, controls) {
   controls.target = new Vector3(...Object.values(ref.current.position))
 }
 
-function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setActiveModel,
+function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setActiveModal,
   revolutionSpeed, rotationSpeed
  }) {
-  const modelContext = useModelContext();
+  const modalContext = useModalContext();
   const ref = useRef(null);
   const { camera, controls } = useThree();
   const s = useSpring({
@@ -74,7 +74,7 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
                   camera.position.set(...r);
                 },
                 onRest: (e) => {
-                  modelContext.setActiveModel(name)
+                  modalContext.setActiveModal(name)
                 }
               })
 

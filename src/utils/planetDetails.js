@@ -16,7 +16,8 @@ const infoMap = {
     Mercury: mercuryData,
     Venus: venusData,
     Neptune: neptuneData,
-    Uranus: uranusData
+    Uranus: uranusData,
+    Sun: sunData
 }
 
 export default infoMap
