@@ -9,7 +9,7 @@ const planetRenderProperties = [
             additiveBlending: false
         },
         atmosphereMap: null,
-        radius: 2,
+        radius: 2.5,
         accentColor: "#577BC1",
         revolutionSpeed: 0.001,
         rotationSpeed: 0,
@@ -81,7 +81,7 @@ const planetRenderProperties = [
             additiveBlending: false
         },
         atmosphereMap: null,
-        radius: 2.5,
+        radius: 2.4,
         accentColor: "#754E1A",
         revolutionSpeed: 0.0001,
         rotationSpeed: 0.01,
