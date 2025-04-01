@@ -4,7 +4,7 @@ import { Html, OrbitControls, useTexture } from "@react-three/drei";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import infoMap from "../utils/planetDetails";
 import { useEffect, useRef, useState } from "react";
-import { Asterisk, Atom, Cloud, Earth, Moon, Orbit, Shell, Spline, TentTree, TreeDeciduous } from "lucide-react";
+import { Asterisk, Atom, Cloud, Earth, Moon, Orbit, Radius, Shell, Spline, TentTree, TreeDeciduous } from "lucide-react";
 import { AdditiveBlending, SRGBColorSpace } from "three";
 import { planetRenderProperties } from "../utils/planetInfo";
 
@@ -25,7 +25,7 @@ function PlanetInfo() {
         setRenderInfo(renderProps)
     }, []);
     console.log(renderInfo);
-    
+
     return (
         <div className="flex h-screen">
             <div className="w-1/2 h-full p-6">
@@ -37,9 +37,9 @@ function PlanetInfo() {
                     </Html>
                     <ambientLight intensity={0.5} />
                     <directionalLight position={[5, 5, 5]} intensity={1.5} />
-                    <OrbitControls/>
+                    <OrbitControls />
                     {
-                        renderInfo && <PlanetModel renderInfo={renderInfo}/>
+                        renderInfo && <PlanetModel renderInfo={renderInfo} />
                     }
                 </Canvas>
             </div>
@@ -49,7 +49,7 @@ function PlanetInfo() {
                         <>
                             <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
                                 <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
-                                    <Earth className="text-sky-300" />
+                                    <Earth className="text-sky-300 shrink-0" />
                                     {info["Title"]}.
                                 </span>
                                 <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
@@ -59,7 +59,7 @@ function PlanetInfo() {
 
                             <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
                                 <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
-                                    <Cloud className="text-sky-300" />
+                                    <Cloud className="text-sky-300 shrink-0" />
                                     Atmosphere.
                                 </span>
                                 <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
@@ -69,7 +69,7 @@ function PlanetInfo() {
 
                             <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
                                 <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
-                                    <Orbit className="text-sky-300" />
+                                    <Orbit className="text-sky-300 shrink-0" />
                                     Orbit And Rotation.
                                 </span>
                                 <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
@@ -78,72 +78,117 @@ function PlanetInfo() {
                             </div>
                             <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
                                 <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
-                                    <Atom className="text-sky-300" />
+                                    <Atom className="text-sky-300 shrink-0" />
                                     Structure.
                                 </span>
                                 <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
                                     {info["structure"]}
                                 </span>
                             </div>
-                            <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
-                                <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
-                                    <Moon className="text-sky-300" />
-                                    Moons.
-                                </span>
-                                <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
-                                    {info["moons"]}
-                                </span>
-                            </div>
-                            <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
-                                <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
-                                    <TreeDeciduous className="text-sky-300" />
-                                    Life.
-                                </span>
-                                <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
-                                    {info["possibility for life"]}
-                                </span>
-                            </div>
+                            {
+                                info["moons"] &&
+                                <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
+                                    <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
+                                        <Moon className="text-sky-300 shrink-0" />
+                                        Moons.
+                                    </span>
+                                    <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
+                                        {info["moons"]}
+                                    </span>
+                                </div>
+                            }
+                            {
+                                info["possibility for life"] &&
+                                <div className="px-14 py-10 border-b-[1px] border-dashed border-neutral-700 flex flex-col">
+                                    <span className="text-3xl tracking-wider font-medium flex gap-x-4 items-center">
+                                        <TreeDeciduous className="text-sky-300 shrink-0" />
+                                        Life.
+                                    </span>
+                                    <span className="text-neutral-200 mt-2 tracking-wider text-lg font-light ">
+                                        {info["possibility for life"]}
+                                    </span>
+                                </div>
+                            }
+
                             <div className="grid grid-cols-2 grid-rows-2 gap-4 p-4 text-neutral-200 tracking-wider text-lg font-light">
-                                <div className="flex justify-start items-center gap-x-4 px-10 py-6 
+                                {
+                                    info["Duration of one day"] &&
+                                    <div className="flex justify-start items-center gap-x-4 px-10 py-6 
                                 border-[1px] border-dashed border-neutral-700 rounded-lg">
-                                    <TentTree className="text-amber-300" size={34} />
-                                    <div className=" flex flex-col gap-y-1">
-                                        <span className="font-medium text-[#fff]">Day Duration</span>
-                                        <span className="text-sm">
-                                            {info["Duration of one day"]}
-                                        </span>
+                                        <TentTree className="text-amber-300 shrink-0" size={34} />
+                                        <div className=" flex flex-col gap-y-1">
+                                            <span className="font-medium text-[#fff]">Day Duration</span>
+                                            <span className="text-sm">
+                                                {info["Duration of one day"]}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex justify-start items-center gap-x-4 px-10 py-6 
+                                }
+                                {
+                                    info["gravity"] &&
+                                    <div className="flex justify-start items-center gap-x-4 px-10 py-6 
                                 border-[1px] border-dashed border-neutral-700 rounded-lg">
-                                    <Shell className="text-amber-300" size={34} />
-                                    <div className=" flex flex-col gap-y-1">
-                                        <span className="font-medium text-[#fff]">Gravity</span>
-                                        <span className="text-sm">
-                                            {info["gravity"]}
-                                        </span>
+                                        <Shell className="text-amber-300 shrink-0" size={34} />
+                                        <div className=" flex flex-col gap-y-1">
+                                            <span className="font-medium text-[#fff]">Gravity</span>
+                                            <span className="text-sm">
+                                                {info["gravity"]}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex justify-start items-center gap-x-4 px-10 py-6 
+                                }
+                                {
+                                    info["Age"] &&
+                                    <div className="flex justify-start items-center gap-x-4 px-10 py-6 
                                 border-[1px] border-dashed border-neutral-700 rounded-lg">
-                                    <Asterisk className="text-amber-300" size={34} />
-                                    <div className=" flex flex-col gap-y-1">
-                                        <span className="font-medium text-[#fff]">Age</span>
-                                        <span className="text-sm">
-                                            {info["Age"]}
-                                        </span>
+                                        <Asterisk className="text-amber-300 shrink-0" size={34} />
+                                        <div className=" flex flex-col gap-y-1">
+                                            <span className="font-medium text-[#fff]">Age</span>
+                                            <span className="text-sm">
+                                                {info["Age"]}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex justify-start items-center gap-x-4 px-10 py-6 
+                                }
+                                {
+                                    info["Distance from Sun"] &&
+                                    <div className="flex justify-start items-center gap-x-4 px-10 py-6 
                                 border-[1px] border-dashed border-neutral-700 rounded-lg">
-                                    <Spline className="text-amber-300" size={34} />
-                                    <div className=" flex flex-col gap-y-1">
-                                        <span className="font-medium text-[#fff]">Distance From Sun</span>
-                                        <span className="text-sm">
-                                            {info["Distance from Sun"]}
-                                        </span>
+                                        <Spline className="text-amber-300 shrink-0" size={34} />
+                                        <div className=" flex flex-col gap-y-1">
+                                            <span className="font-medium text-[#fff]">Distance From Sun</span>
+                                            <span className="text-sm">
+                                                {info["Distance from Sun"]}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+                                {
+                                    info["size"] &&
+                                    <div className="flex justify-start items-center gap-x-4 px-10 py-6 
+                                border-[1px] border-dashed border-neutral-700 rounded-lg">
+                                        <Radius className="text-amber-300 shrink-0" size={34} />
+                                        <div className=" flex flex-col gap-y-1">
+                                            <span className="font-medium text-[#fff]">Size</span>
+                                            <span className="text-sm">
+                                                {info["size"]}
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
+                                {
+                                    info["distance from earth"] &&
+                                    <div className="flex justify-start items-center gap-x-4 px-10 py-6 
+                                border-[1px] border-dashed border-neutral-700 rounded-lg">
+                                        <Spline className="text-amber-300 shrink-0" size={34} />
+                                        <div className=" flex flex-col gap-y-1">
+                                            <span className="font-medium text-[#fff]">Distance from Earth</span>
+                                            <span className="text-sm">
+                                                {info["distance from earth"]}
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </>
 
@@ -165,10 +210,10 @@ function PlanetModel({ renderInfo }) {
     texture.colorSpace = SRGBColorSpace;
     texture.anisotropy = 8;
 
-    useFrame(()=>{
+    useFrame(() => {
         if (ref.current) {
             ref.current.rotation.y += 0.001;
-            
+
         }
     });
 
