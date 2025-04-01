@@ -18,7 +18,6 @@ function PlanetInfo() {
     const [planetState, setPlanetState] = useState(planetName);
 
     useEffect(() => {
-        
         setPlanetState(planetName);
     },[planetName]);
 
@@ -32,7 +31,6 @@ function PlanetInfo() {
         const renderProps = planetRenderProperties.filter(obj => obj.name == planetState)[0] || null;
         setRenderInfo(renderProps);
     }, [planetState]);
-    // console.log(renderInfo);
 
     return (
         <div className="flex h-screen">
