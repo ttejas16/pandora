@@ -9,6 +9,7 @@ import { AdditiveBlending, SRGBColorSpace } from "three";
 import { planetRenderProperties } from "../utils/planetInfo";
 
 const planets = Object.keys(infoMap);
+console.log("hi");
 
 function PlanetInfo() {
     const navigate = useNavigate();
