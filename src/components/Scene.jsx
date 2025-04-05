@@ -23,6 +23,7 @@ function Scene() {
         }
 
         focusedOrbit.current = ref.current;
+        focusedOrbit.current.visible = false;
     }
 
     function setFocusedText(ref) {
@@ -33,24 +34,6 @@ function Scene() {
         focusedText.current = ref.current;
         focusedText.current.style.opacity = 0;
     }
-
-    
-
-
-    useFrame(() => {
-        if (!focusedOrbit.current) {
-            return;
-        }
-
-        // if (camera.position.x < 100 || camera.position.y < 100 || camera.position.z < 100) {
-        //     focusedOrbit.current.style.opacity = 0;
-        // }
-        // else {
-        //     focusedOrbit.current.style.opacity = 1;
-        //     console.log("heree");
-            
-        // }
-    })
 
     return (
         <>
@@ -70,6 +53,13 @@ function Scene() {
                         focusedText.current.style.opacity = 1;    
                     }
                     
+                    if (focusedOrbit && distance < 100) {
+                        focusedOrbit.current.visible = false;
+                    }
+                    else if(focusedOrbit){
+                        focusedOrbit.current.visible = true;
+                    }
+
                 }} makeDefault rotateSpeed={2} minDistance={5} />
                 {
                     planetRenderProperties.map((info, index) => {

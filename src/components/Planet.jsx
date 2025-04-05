@@ -1,7 +1,7 @@
 import { Html, Line, useTexture } from "@react-three/drei";
 import { AdditiveBlending, RingGeometry, SRGBColorSpace, Vector3 } from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { config, useSpring, easings } from "@react-spring/three";
 import { useModalContext } from "../hooks/modalContext";
 function lookAt(ref, controls) {
@@ -18,6 +18,7 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
   const modalContext = useModalContext();
   const ref = useRef(null);
   const textRef = useRef(null);
+  const orbitRef = useRef(null);
   const { camera, controls } = useThree();
   const s = useSpring({
     from: {
@@ -50,10 +51,10 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
     <>
       {
         distanceFromSun &&
-        <Orbit radius={distanceFromSun} accentColor={accentColor} />
+        <Orbit ref={orbitRef} radius={distanceFromSun} accentColor={accentColor} />
       }
       <group ref={ref} position={[distanceFromSun, 0, 0]}>
-        <Html ref={textRef}>
+        <Html ref={textRef} className="transition-opacity duration-150">
           <div
             onClick={(e) => {
 
@@ -76,7 +77,9 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
                 },
                 onRest: (e) => {
                   modalContext.setActiveModal(name);
-                  setFocusedOrbit(null);
+                  if (distanceFromSun) {
+                    setFocusedOrbit(orbitRef);
+                  }
                   setFocusedText(textRef);
                 }
               })
@@ -124,7 +127,7 @@ function Atmosphere({ url, blending, radius }) {
   )
 }
 
-function Orbit({ radius, accentColor }) {
+const Orbit = forwardRef(function({ radius, accentColor }, ref) {
   const ring = new RingGeometry(radius, radius, 64 * 6);
   const positions = ring.attributes.position.array;
 
@@ -133,8 +136,8 @@ function Orbit({ radius, accentColor }) {
     points.push([positions[i], positions[i + 1], positions[i + 2]]);
   }
 
-  return <Line position={[0, 0, 0]} points={points} rotation={[Math.PI / 2, 0, 0]} color={accentColor} lineWidth={1} />
-}
+  return <Line ref={ref} position={[0, 0, 0]} points={points} rotation={[Math.PI / 2, 0, 0]} color={accentColor} lineWidth={1} />
+})
 
 
 export default Planet;
