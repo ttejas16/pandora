@@ -1,15 +1,29 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import Camera from "./Camera";
 import { Html, OrbitControls, useTexture } from "@react-three/drei";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import infoMap from "../utils/planetDetails";
 import { useEffect, useRef, useState } from "react";
-import { Asterisk, Atom, ChevronLeft, ChevronRight, Cloud, Earth, Moon, Orbit, Radius, Shell, Spline, TentTree, TreeDeciduous } from "lucide-react";
+import {
+    Asterisk,
+    Atom,
+    ChevronLeft,
+    ChevronRight,
+    Cloud,
+    Earth,
+    Home,
+    Moon,
+    Orbit,
+    Radius,
+    Shell,
+    Spline,
+    TentTree,
+    TreeDeciduous
+} from "lucide-react";
 import { AdditiveBlending, SRGBColorSpace } from "three";
 import { planetRenderProperties } from "../utils/planetInfo";
 
 const planets = Object.keys(infoMap);
-console.log("hi");
 
 function PlanetInfo() {
     const navigate = useNavigate();
@@ -20,7 +34,7 @@ function PlanetInfo() {
 
     useEffect(() => {
         setPlanetState(planetName);
-    },[planetName]);
+    }, [planetName]);
 
     useEffect(() => {
         if (!infoMap[planetState]) {
@@ -35,13 +49,16 @@ function PlanetInfo() {
 
     return (
         <div className="flex h-screen">
-            <div className="w-1/2 h-full p-6">
-                <Canvas>
+            <div className="w-1/2 h-full p-6 relative">
+                <Link to={"/"} className="absolute right-4 z-40">
+                    <Home className="text-neutral-400"/>
+                </Link>
+                <Canvas className="z-[5]">
                     <Html as="div" center fullscreen style={{ top: 0, left: 0, position: "absolute" }}>
                         <div className="text-xl text-neutral-200 tracking-wider font-light">
                             {info && planetState.toUpperCase()}
                         </div>
-                        <button 
+                        <button
                             onClick={e => {
                                 const currentIndex = planets.findIndex((v) => v == planetState);
                                 const nextIndex = (currentIndex - 1) < 0 ? planets.length - 1 : currentIndex - 1;
@@ -49,9 +66,9 @@ function PlanetInfo() {
                                 navigate(`/info/${planets[nextIndex]}`);
                             }}
                             className="absolute bottom-0 left-0">
-                            <ChevronLeft/>
+                            <ChevronLeft />
                         </button>
-                        <button 
+                        <button
                             onClick={e => {
                                 const currentIndex = planets.findIndex((v) => v == planetState);
                                 const nextIndex = (currentIndex + 1) % planets.length;
@@ -59,7 +76,7 @@ function PlanetInfo() {
                                 navigate(`/info/${planets[nextIndex]}`);
                             }}
                             className="absolute bottom-0 right-0">
-                            <ChevronRight/>
+                            <ChevronRight />
                         </button>
                     </Html>
                     <ambientLight intensity={0.5} />

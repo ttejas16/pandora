@@ -12,11 +12,12 @@ function lookAt(ref, controls) {
   controls.target = new Vector3(...Object.values(ref.current.position))
 }
 
-function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setActiveModal,
+function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setFocusedText, setActiveModal,
   revolutionSpeed, rotationSpeed
  }) {
   const modalContext = useModalContext();
   const ref = useRef(null);
+  const textRef = useRef(null);
   const { camera, controls } = useThree();
   const s = useSpring({
     from: {
@@ -32,11 +33,11 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
   texture.anisotropy = 8;
 
 
-  useEffect(() => {
-    if (name == 'Sun') {
-      setFocusedOrbit(ref)
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (name == 'Sun') {
+  //     setFocusedOrbit(ref)
+  //   }
+  // }, []);
 
   // useFrame(({ clock }) => {
   //   const t = clock.getElapsedTime();
@@ -52,12 +53,12 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
         <Orbit radius={distanceFromSun} accentColor={accentColor} />
       }
       <group ref={ref} position={[distanceFromSun, 0, 0]}>
-        <Html>
+        <Html ref={textRef}>
           <div
             onClick={(e) => {
 
               lookAt(ref, controls);
-              setFocusedOrbit(ref);
+              
 
               s.position.start({
                 from: {
@@ -74,7 +75,9 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
                   camera.position.set(...r);
                 },
                 onRest: (e) => {
-                  modalContext.setActiveModal(name)
+                  modalContext.setActiveModal(name);
+                  setFocusedOrbit(null);
+                  setFocusedText(textRef);
                 }
               })
 

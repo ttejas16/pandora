@@ -14,30 +14,43 @@ function Scene() {
 
     const [activeModel, setActiveModel] = useState(null);
 
+    const focusedText = useRef(null);
     const focusedOrbit = useRef(null);
     const { camera, controls } = useThree();
     function setFocusedOrbit(ref) {
         if (!ref) {
+            return;
         }
 
-        return;
-        focusedOrbit.current.visible = true;
         focusedOrbit.current = ref.current;
     }
 
+    function setFocusedText(ref) {
+        if (!ref) {
+            return;
+        }
+        
+        focusedText.current = ref.current;
+        focusedText.current.style.opacity = 0;
+    }
 
-    // useFrame(() => {
-    //     if (!focusedOrbit.current) {
-    //     }
-    //     return;
+    
 
-    //     if (camera.position.x < 100 || camera.position.y < 100 || camera.position.z < 100) {
-    //         focusedOrbit.current.visible = false;
-    //     }
-    //     else {
-    //         focusedOrbit.current.visible = true;
-    //     }
-    // })
+
+    useFrame(() => {
+        if (!focusedOrbit.current) {
+            return;
+        }
+
+        // if (camera.position.x < 100 || camera.position.y < 100 || camera.position.z < 100) {
+        //     focusedOrbit.current.style.opacity = 0;
+        // }
+        // else {
+        //     focusedOrbit.current.style.opacity = 1;
+        //     console.log("heree");
+            
+        // }
+    })
 
     return (
         <>
@@ -45,7 +58,17 @@ function Scene() {
                 <Camera position={[4000, 5000, 9000]} />
                 {/* <axesHelper args={[2000]} /> */}
                 <TrackballControls onStart={() => {
-                    console.log("zoom");
+                    if (!focusedText.current || !controls) {
+                        return;
+                    }
+                    
+                    const distance = camera.position.distanceTo(controls.target);
+                    if (distance < 100) {
+                        focusedText.current.style.opacity = 0;    
+                    }
+                    else{
+                        focusedText.current.style.opacity = 1;    
+                    }
                     
                 }} makeDefault rotateSpeed={2} minDistance={5} />
                 {
@@ -53,6 +76,7 @@ function Scene() {
                         return <Planet
                             setActiveModel={setActiveModel}
                             setFocusedOrbit={setFocusedOrbit}
+                            setFocusedText={setFocusedText}
                             key={index}
                             map={info.map}
                             atmosphereMap={info.atmosphereMap}
@@ -65,8 +89,6 @@ function Scene() {
                         />
                     })
                 }
-
-                {/* <Foo/> */}
                 <Stars radius={8000} count={1000} depth={100} factor={80} />
                 <Particles />
         </>
