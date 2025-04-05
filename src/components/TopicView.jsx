@@ -2,7 +2,8 @@ import { BookMarked, ChartBar, ChartColumn, ChartColumnBig, ChartLine, ChartNoAx
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { deleteTest, getTests, getTopicUsers } from "../api/user";
+import { getTopicUsers } from "../api/user";
+import { deleteTest, getTests } from "../api/test"; 
 import SpinnerSmall from "./SpinnerSmall";
 
 function TopicView() {

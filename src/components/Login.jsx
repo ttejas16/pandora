@@ -135,6 +135,12 @@ function Login() {
           </div>
         </section>
       }
+      {
+        authContext.loading && 
+        <div className="w-full h-screen flex justify-center items-center">
+          <SpinnerSmall className="text-neutral-800 fill-primary"/>
+        </div>
+      }
     </>
   )
 }

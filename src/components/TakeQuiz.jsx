@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTestQuestions, submitTest } from "../api/user";
+import { getTestQuestions, submitTest } from "../api/test";
 import { useLocation, useNavigate } from "react-router-dom";
 import SpinnerSmall from "./SpinnerSmall";
 import { motion } from "motion/react";

@@ -2,7 +2,7 @@ import { CalendarDays, Check, CheckCheck, ListPlus, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { div } from "motion/react-client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createTest } from "../api/user";
+import { createTest } from "../api/test";
 import { useLocation, useNavigate } from "react-router-dom";
 import SpinnerSmall from "./SpinnerSmall";
 import DatePicker from "./DatePicker";

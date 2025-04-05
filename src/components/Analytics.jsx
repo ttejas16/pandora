@@ -1,10 +1,9 @@
 import { useLocation } from "react-router-dom";
-import { getAnalytics } from "../api/user";
 import { useEffect, useState } from "react";
 import { Activity, Hash, Users } from "lucide-react";
 import MarkDistributionChart from "./MarkDistributionChart";
 import { getInitials } from "../utils/getInitials";
-import { getQuestionAnalytics } from "../api/test";
+import { getQuestionAnalytics, getAnalytics } from "../api/test";
 import QuestionAnalytics from "./QuestionAnalytics";
 
 const initialMetaData = {
@@ -21,8 +20,8 @@ function Analytics() {
     const location = useLocation();
 
     async function fetchAnalytics() {
-        
-        
+
+
         const { data, error } = await getAnalytics(location.state.testId);
         if (error) {
             console.log(error);
@@ -40,9 +39,9 @@ function Analytics() {
         });
         setUserRankings(Object.values(data.userScoreMap))
     }
-    
+
     async function fetchQuestionAnalytics() {
-        const { data,error } = await getQuestionAnalytics(location.state.testId);
+        const { data, error } = await getQuestionAnalytics(location.state.testId);
         if (error) {
             console.log(error);
             return;
@@ -129,10 +128,10 @@ function Analytics() {
                     </div>
                     {
                         questionAnalytics.map((question) => {
-                            return <QuestionAnalytics 
-                                        key={question.qId}
-                                        questionWithOptionAnalytics={question}
-                                    />
+                            return <QuestionAnalytics
+                                key={question.qId}
+                                questionWithOptionAnalytics={question}
+                            />
                         })
                     }
                 </div>

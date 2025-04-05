@@ -1,20 +1,6 @@
-const serverUrl = "http://localhost:3000";
-
+import { getReqInit, postReqInit, serverUrl } from "./init";
 
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-
-const getReqInit = {
-    credentials: "include",
-    method: 'GET',
-    headers: { "Content-Type": "application/json" },
-}
-
-const postReqInit = {
-    credentials: "include",
-    method: 'POST',
-    headers: { "Content-Type": "application/json" },
-}
-
 
 async function signUp(data) {
     try {

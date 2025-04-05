@@ -124,15 +124,16 @@ function Topics() {
                 <Search size={18} />
               </button>
             </div>
-            <button
+            <div
               onClick={(e) => setShowProfileContext(!showProfileContext)}
               title={authContext.user.username}
-              className="border-[1px] border-neutral-800 flex justify-center items-center w-12 h-12 rounded-full relative">
+              className="border-[1px] border-neutral-800 flex justify-center 
+              cursor-pointer items-center w-12 h-12 rounded-full relative">
               <span className="font-semibold">
                 {authContext.user.username.split(" ").filter(w => w).map(w => w[0].toUpperCase()).join("")}
               </span>
               {showProfileContext && <ProfileMenu />}
-            </button>
+            </div>
           </div>
         </div>
         {
