@@ -12,9 +12,9 @@ function lookAt(ref, controls) {
   controls.target = new Vector3(...Object.values(ref.current.position))
 }
 
-function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setFocusedText, setActiveModal,
-  revolutionSpeed, rotationSpeed
- }) {
+function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setFocusedText, setFocusedPlanet, setActiveModal,
+  revolutionSpeed, rotationSpeed, initialPosition
+}) {
   const modalContext = useModalContext();
   const ref = useRef(null);
   const textRef = useRef(null);
@@ -40,12 +40,12 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
   //   }
   // }, []);
 
-  // useFrame(({ clock }) => {
-  //   const t = clock.getElapsedTime();
-  //   ref.current.rotation.y += 0.001;
-  //   ref.current.position.x = Math.cos(t * rotationSpeed) * distanceFromSun;
-  //   ref.current.position.z = Math.sin(t * rotationSpeed) * distanceFromSun;
-  // })
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    ref.current.rotation.y += 0.001;
+    // ref.current.position.x = Math.cos(t * rotationSpeed) * distanceFromSun;
+    // ref.current.position.z = Math.sin(t * rotationSpeed) * distanceFromSun;
+  })
 
   return (
     <>
@@ -53,20 +53,30 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
         distanceFromSun &&
         <Orbit ref={orbitRef} radius={distanceFromSun} accentColor={accentColor} />
       }
-      <group ref={ref} position={[distanceFromSun, 0, 0]}>
+      <group ref={ref} position={initialPosition}>
         <Html ref={textRef} className="transition-opacity duration-150">
           <div
             onClick={(e) => {
 
               lookAt(ref, controls);
-              
+
+              const objectPosition = new Vector3(); // Your object's current world position
+              ref.current.getWorldPosition(objectPosition); // Get the object's world position
+
+              const fromPosition = camera.position.clone();
+
+              const direction = new Vector3().subVectors(objectPosition, fromPosition).normalize();
+
+              const unitsToward = 10;
+              const nearPoint = new Vector3().copy(objectPosition).addScaledVector(direction, -unitsToward);
 
               s.position.start({
                 from: {
                   position: camera.position.toArray()
                 },
                 to: {
-                  position: [distanceFromSun - 10, 10, 10]
+                  // position: [distanceFromSun - 10, 10, 10]
+                  position: [nearPoint.x, nearPoint.y, nearPoint.z]
                 },
                 config: {
                   precision: 0.0001,
@@ -79,6 +89,7 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
                   modalContext.setActiveModal(name);
                   if (distanceFromSun) {
                     setFocusedOrbit(orbitRef);
+                    setFocusedPlanet(ref);
                   }
                   setFocusedText(textRef);
                 }
@@ -127,7 +138,7 @@ function Atmosphere({ url, blending, radius }) {
   )
 }
 
-const Orbit = forwardRef(function({ radius, accentColor }, ref) {
+const Orbit = forwardRef(function ({ radius, accentColor }, ref) {
   const ring = new RingGeometry(radius, radius, 64 * 6);
   const positions = ring.attributes.position.array;
 

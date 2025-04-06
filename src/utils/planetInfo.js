@@ -1,4 +1,37 @@
-import { earthDistance, jupiterDistance, marsDistance, mercuryDistance, neptuneDistance, saturnDistance, uranusDistance, venusDistance } from "./distances";
+import {
+    earthDistance,
+    jupiterDistance,
+    marsDistance,
+    mercuryDistance,
+    neptuneDistance,
+    saturnDistance,
+    uranusDistance,
+    venusDistance
+} from "./distances";
+
+const initialAngleWithDistances = {
+    Mercury: [45, mercuryDistance],
+    Venus: [-45, venusDistance],
+    Earth: [160, earthDistance],
+    Mars: [-90, marsDistance],
+    Jupiter: [180, jupiterDistance],
+    Saturn: [-10, saturnDistance],
+    Uranus: [135 ,uranusDistance],
+    Neptune: [150, neptuneDistance],
+}
+
+const initialPositions = {};
+function calculateInitialPositions() {
+    for (const key in initialAngleWithDistances) {
+        const [angle, radius] = initialAngleWithDistances[key];
+        const x = Math.cos(angle) * radius;
+        const y = 0;
+        const z = Math.sin(angle) * radius;
+
+        initialPositions[key] = [x, y, z];
+    }
+}
+calculateInitialPositions();
 
 const planetRenderProperties = [
     {
@@ -13,6 +46,7 @@ const planetRenderProperties = [
         accentColor: "#577BC1",
         revolutionSpeed: 0.001,
         rotationSpeed: 0,
+        initialPosition: [0, 0, 0]
     },
     {
         name: "Mercury",
@@ -25,7 +59,8 @@ const planetRenderProperties = [
         radius: 2,
         accentColor: "#727D73",
         revolutionSpeed: 0.0001,
-        rotationSpeed: 0.1,
+        rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Mercury"]
     },
     {
         name: "Venus",
@@ -35,14 +70,15 @@ const planetRenderProperties = [
             additiveBlending: false
         },
         atmosphereMap: {
-            
+
             url: "/2k_venus_atmosphere.jpg",
             additiveBlending: false
         },
         radius: 2,
         accentColor: "#FFB22C",
         revolutionSpeed: 0.0001,
-        rotationSpeed: 0.01,
+        rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Venus"]
     },
     {
         name: "Earth",
@@ -58,7 +94,8 @@ const planetRenderProperties = [
         radius: 2,
         accentColor: "#2973B2",
         revolutionSpeed: 0.0001,
-        rotationSpeed: 0.01,
+        rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Earth"]
     },
     {
         name: "Mars",
@@ -71,7 +108,8 @@ const planetRenderProperties = [
         radius: 2,
         accentColor: "#740938",
         revolutionSpeed: 0.0001,
-        rotationSpeed: 0.01,
+        rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Mars"]
     },
     {
         name: "Jupiter",
@@ -84,7 +122,8 @@ const planetRenderProperties = [
         radius: 2.4,
         accentColor: "#754E1A",
         revolutionSpeed: 0.0001,
-        rotationSpeed: 0.01,
+        rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Jupiter"]
     },
     {
         name: "Saturn",
@@ -97,7 +136,8 @@ const planetRenderProperties = [
         radius: 2,
         accentColor: "#D39D55",
         revolutionSpeed: 0.0001,
-        rotationSpeed: 0.01,
+        rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Saturn"]
     },
     {
         name: "Uranus",
@@ -111,6 +151,7 @@ const planetRenderProperties = [
         accentColor: "#3D8D7A",
         revolutionSpeed: 0.0001,
         rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Uranus"]
     },
     {
         name: "Neptune",
@@ -124,6 +165,7 @@ const planetRenderProperties = [
         accentColor: "#27667B",
         revolutionSpeed: 0.0001,
         rotationSpeed: 0.0001,
+        initialPosition: initialPositions["Neptune"]
     },
 ]
 
