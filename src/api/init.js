@@ -1,4 +1,4 @@
-const serverUrl = "http://localhost:3000";
+const serverUrl = import.meta.env.VITE_BACKEND_URL;
 
 const getReqInit = {
     credentials: "include",
