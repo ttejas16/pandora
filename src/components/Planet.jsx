@@ -4,6 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { config, useSpring, easings } from "@react-spring/three";
 import { useModalContext } from "../hooks/modalContext";
+import { DoubleSide } from "three/src/constants.js";
 function lookAt(ref, controls) {
   if (!ref.current) {
     return;
@@ -13,7 +14,7 @@ function lookAt(ref, controls) {
 }
 
 function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor, setFocusedOrbit, setFocusedText, setFocusedPlanet, setActiveModal,
-  revolutionSpeed, rotationSpeed, initialPosition
+  revolutionSpeed, rotationSpeed, initialPosition, ring
 }) {
   const modalContext = useModalContext();
   const ref = useRef(null);
@@ -116,6 +117,10 @@ function Planet({ map, atmosphereMap, distanceFromSun, radius, name, accentColor
             blending={atmosphereMap.additiveBlending}
           />
         }
+        {
+          ring && 
+          <TexturedRing url={ring.url}/>
+        }
 
       </group>
     </>
@@ -150,5 +155,31 @@ const Orbit = forwardRef(function ({ radius, accentColor }, ref) {
   return <Line ref={ref} position={[0, 0, 0]} points={points} rotation={[Math.PI / 2, 0, 0]} color={accentColor} lineWidth={1} />
 })
 
+function TexturedRing({ url }) {
 
+  const [ring] = useTexture([url]);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    var pos = ref.current.attributes.position;
+    var v3 = new Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      v3.fromBufferAttribute(pos, i);
+      ref.current.attributes.uv.setXY(i, v3.length() < 4 ? 0 : 1, 1);
+    }
+
+  }, []);
+
+  return (
+    <mesh rotation={[Math.PI / 2, 0, 0]}>
+      <ringGeometry ref={ref} args={[3, 5, 32 * 3]} />
+      <meshStandardMaterial side={DoubleSide} map={ring} />
+    </mesh>
+  )
+
+}
 export default Planet;

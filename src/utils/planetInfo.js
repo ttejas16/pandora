@@ -16,7 +16,7 @@ const initialAngleWithDistances = {
     Mars: [-90, marsDistance],
     Jupiter: [180, jupiterDistance],
     Saturn: [-10, saturnDistance],
-    Uranus: [135 ,uranusDistance],
+    Uranus: [135, uranusDistance],
     Neptune: [150, neptuneDistance],
 }
 
@@ -133,6 +133,9 @@ const planetRenderProperties = [
             additiveBlending: false
         },
         atmosphereMap: null,
+        ring: {
+            url: "/2k_saturn_ring_alpha.png"
+        },
         radius: 2,
         accentColor: "#D39D55",
         revolutionSpeed: 0.0001,

@@ -115,6 +115,7 @@ function Scene() {
                         revolutionSpeed={info.revolutionSpeed}
                         rotationSpeed={info.rotationSpeed}
                         initialPosition={info.initialPosition}
+                        ring={info.ring}
                     />
                 })
             }
