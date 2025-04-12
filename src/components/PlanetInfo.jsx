@@ -3,7 +3,7 @@ import Camera from "./Camera";
 import { Html, OrbitControls, useTexture } from "@react-three/drei";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import infoMap from "../utils/planetDetails";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
     Asterisk,
     Atom,
@@ -20,8 +20,9 @@ import {
     TentTree,
     TreeDeciduous
 } from "lucide-react";
-import { AdditiveBlending, SRGBColorSpace } from "three";
+import { AdditiveBlending, SRGBColorSpace, Vector3 } from "three";
 import { planetRenderProperties } from "../utils/planetInfo";
+import { DoubleSide } from "three/src/constants.js";
 
 const planets = Object.keys(infoMap);
 
@@ -51,11 +52,11 @@ function PlanetInfo() {
         <div className="flex h-screen">
             <div className="w-1/2 h-full p-6 relative">
                 <Link to={"/"} className="absolute right-4 z-40">
-                    <Home className="text-neutral-400"/>
+                    <Home className="text-neutral-400" />
                 </Link>
                 <Canvas className="z-[5]">
                     <Html as="div" center fullscreen style={{ top: 0, left: 0, position: "absolute" }}>
-                        <div className="text-xl text-neutral-200 tracking-wider font-light">
+                        <div className="text-xl text-neutral-200 tracking-wider font-light no-select">
                             {info && planetState.toUpperCase()}
                         </div>
                         <button
@@ -81,7 +82,8 @@ function PlanetInfo() {
                     </Html>
                     <ambientLight intensity={0.5} />
                     <directionalLight position={[5, 5, 5]} intensity={1.5} />
-                    <OrbitControls />
+                    <OrbitControls position={[0, 100, 0]} />
+                    <InitialCamera/>
                     {
                         renderInfo && <PlanetModel renderInfo={renderInfo} />
                     }
@@ -278,6 +280,9 @@ function PlanetModel({ renderInfo }) {
                     blending={renderInfo.atmosphereMap.additiveBlending}
                 />
             }
+            {
+                renderInfo.ring && <TexturedRing url={renderInfo.ring.url} />
+            }
         </group>
     )
 }
@@ -296,5 +301,39 @@ function Atmosphere({ url, blending, radius }) {
         </mesh>
     )
 }
+function InitialCamera() {
+    const { camera } = useThree();
+
+    useEffect(() => {
+        camera.position.y += 2;
+    }, []);
+}
+
+function TexturedRing({ url }) {
+    const [ring] = useTexture([url]);
+    const ref = useRef(null);
+  
+    useLayoutEffect(() => {
+      if (!ref.current) {
+        return;
+      }
+  
+      var pos = ref.current.attributes.position;
+      var v3 = new Vector3();
+      for (let i = 0; i < pos.count; i++) {
+        v3.fromBufferAttribute(pos, i);
+        ref.current.attributes.uv.setXY(i, v3.length() < 4 ? 0 : 1, 1);
+      }
+  
+    }, []);
+  
+    return (
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry ref={ref} args={[3, 5, 32 * 3]} />
+        <meshStandardMaterial side={DoubleSide} map={ring} />
+      </mesh>
+    )
+  
+  }
 
 export default PlanetInfo;
