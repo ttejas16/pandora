@@ -202,7 +202,7 @@ function Topics() {
             (searchQuery.trim() && !searchLoading) && (
               searchResults.length > 0 ?
                 searchResults.map((topic, index) => {
-                  return <SearchTopicCard key={topic.topicId} topic={topic} />
+                  return <SearchTopicCard key={topic.topicId} topic={topic} appendTopic={appendTopic} />
                 }) :
                 <div className="col-span-full flex justify-center items-center gap-x-4 text-neutral-300 mt-4">
                   <Squirrel size={60} strokeWidth={1} />

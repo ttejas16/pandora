@@ -4,7 +4,7 @@ import SpinnerSmall from "./SpinnerSmall";
 import { useState } from "react";
 import Thumbnail from "./Thumbnail";
 
-function SearchTopicCard({ topic }) {
+function SearchTopicCard({ topic, appendTopic }) {
     const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
 
@@ -23,6 +23,7 @@ function SearchTopicCard({ topic }) {
 
         setTimeout(() => {
             showToast({ title: "Topic Joined!", type: "primary" });
+            appendTopic(data);
             setLoading(false);
         }, 1000);
     }
