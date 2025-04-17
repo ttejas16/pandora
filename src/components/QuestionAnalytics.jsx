@@ -1,5 +1,5 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js/auto";
-import { Bar } from "react-chartjs-2";
+import { Bar, Chart } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 const dummyData = [
@@ -11,6 +11,13 @@ const dummyData = [
 ];
 
 const d = Array.from({ length: 4 }).map((_, i) => { return { x: (i + 1) * 10, y: i + 1 } })
+
+const colors = {
+    correctOptionBarColor: "#84fc0399",
+    correctOptionBorderColor: "#84fc03",
+    defaultBarColor: '#2dd4bf99',
+    defaultBorderColor: '#5eead4'
+};
 
 const defaultDataset = {
     label: "",
@@ -99,18 +106,34 @@ function QuestionAnalytics({ questionWithOptionAnalytics }) {
         return { x: option.by?.length, y: option.name };
     })
 
-    // console.log(chartData.map(obj => obj.y));
+    const barColors = chartData.map(optionObj => {
+        if (optionObj.y == questionWithOptionAnalytics.correctAns) {
+            return colors.correctOptionBarColor;
+        }
+
+        return colors.defaultBarColor;
+    })
+
+    const borderColors = chartData.map(optionObj => {
+        if (optionObj.y == questionWithOptionAnalytics.correctAns) {
+            return colors.correctOptionBorderColor;
+        }
+
+        return colors.defaultBorderColor;
+    })
 
 
     return (
-        <div className="border-[1px] border-neutral-800 bg-neutral-950 p-2 rounded-md h-[350px] flex justify-start">
+        <div className="border-[1px] border-neutral-800 bg-neutral-950 p-2 rounded-md h-[350px] flex justify-center">
             <Bar
                 data={{
                     labels: chartData.map(obj => obj.y),
                     datasets: [{
                         ...defaultDataset,
                         data: chartData,
-                        label: "Number of responses"
+                        label: "Number of responses",
+                        backgroundColor: barColors,
+                        borderColor: borderColors
                     }]
                 }}
                 options={{
@@ -119,6 +142,18 @@ function QuestionAnalytics({ questionWithOptionAnalytics }) {
                         title: {
                             ...defaultOptions.plugins.title,
                             text: questionWithOptionAnalytics.question
+                        },
+                        legend:{
+                            labels:{
+                                generateLabels: function (chart) {
+                                    const original = ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
+                                    return original.map(label => ({
+                                        ...label,
+                                        fillStyle: colors.defaultBarColor,
+                                        strokeStyle: colors.defaultBorderColor
+                                    }));
+                                }
+                            }
                         }
                     }
                 }}
