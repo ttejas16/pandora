@@ -39,13 +39,14 @@ function TakeQuiz() {
         const { data, error } = await submitTest(location.state.testId, answers);
         if (error) {
             console.log(error);
+            setSubmitLoading(false);
             showToast({ title: error, type: "secondary" })
             return;
         }
 
         setTimeout(() => {
             setSubmitLoading(false);
-            // navigate(`/topics/${topic.topicId}`, { replace: true });
+            navigate(-1);
         }, 1000);
     }
 

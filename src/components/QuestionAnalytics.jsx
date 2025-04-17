@@ -99,7 +99,7 @@ function QuestionAnalytics({ questionWithOptionAnalytics }) {
         return { x: option.by?.length, y: option.name };
     })
 
-    console.log(chartData.map(obj => obj.y));
+    // console.log(chartData.map(obj => obj.y));
 
 
     return (
